@@ -1,0 +1,193 @@
+================================================================================
+SESSION SUMMARY: Exploratory Visualization Pipeline Complete
+================================================================================
+
+Date: August 17, 2026
+Project: abortion-cause-of-death
+Repository: unwelcomedata/abortion-cause-of-death (private)
+
+================================================================================
+WHAT WAS ACCOMPLISHED
+================================================================================
+
+✓ COMPLETED TASKS:
+
+1. Updated 04-viz.ipynb with 6 exploratory charts
+   - Chart 1: National abortion comparison (social-ready)
+   - Chart 2: Top 7 causes by race (1×6 grid)
+   - Chart 3: Top 10 causes stacked by sex with percents (social-ready)
+   - Chart 3b: Race-specific abortion comparisons (social-ready) — NEW
+   - Chart 4: Small multiples (cause × sex × age, national, no labels)
+   - Chart 5: Small multiples by race (top causes × age, no labels)
+   - Chart 6: Top causes by race & sex, stacked (White & Black) — REFACTORED
+   - Analysis section: Notable patterns identified
+
+2. Identified 7 dramatic findings from small multiples
+   - Suicide: 79.8% male (4.0x higher than female)
+   - Alzheimer's: 67.9% female (2.1x higher than male)
+   - Accidents: 65.7% male
+   - Liver disease: 61.4% male
+   - Kidney disease concentrated in Black/Native Hawaiian
+   - Respiratory disease nearly universal except Asian
+   - Suicide in top 7 only for Multi-race & Native Hawaiian/PI
+
+3. Created comprehensive documentation
+   - ANALYSIS-FINDINGS.md: Detailed findings + technical notes
+   - PROJECT-STATUS.md: Complete session handoff with exploration backlog
+   - SOCIAL-VIZ-READY.md: 3 publication-ready charts + messaging templates
+
+4. Applied best practices
+   - Database connections properly closed
+   - Display names applied consistently across all charts
+   - Value labels on all labeled charts (none on exploratory)
+   - Stacked format with percent labels for sex/race comparisons
+
+================================================================================
+FILES READY FOR SOCIAL MEDIA (DEFINITE)
+================================================================================
+
+1. outputs/01_national_without_vs_with.png
+   → Chart 1: National abortion comparison
+   
+2. outputs/03_causes_by_sex_national.png
+   → Chart 3: Top 10 causes stacked by sex (includes suicide 79.8% male finding)
+   
+3. outputs/03b_national_without_vs_with_race_white.png
+   → Chart 3b: White population abortion comparison
+   
+4. outputs/03b_national_without_vs_with_race_black_or_african_american.png
+   → Chart 3b: Black population abortion comparison
+
+All include value labels and are publication-ready (150 DPI).
+See SOCIAL-VIZ-READY.md for copy templates and publishing checklist.
+
+================================================================================
+EXPLORATION BACKLOG (NEXT SESSION)
+================================================================================
+
+HIGH PRIORITY:
+
+1. Accidents Breakdown
+   → Need: What types of accidents? Motor vehicle, falls, poisoning?
+   → Data source: CDC WONDER (may need new query for ICD-10 detail)
+   → Why: 3rd-4th leading cause; need to understand composition
+
+2. Homicide by Perpetrator Race
+   → Need: For homicides (top 10 in Black populations), killed by whom?
+   → Data source: CDC NVDRS or FBI UCR (NOT in WONDER)
+   → Why: Politically important; counter stereotypes with data
+
+3. Homicide by Age
+   → Need: At what age is homicide leading/top-10 cause?
+   → Data source: mort_by_sex_age table (already have)
+   → Why: Expect peak in teens/20s; validate if true across races
+
+4. Cause-Specific Demographics ("Unique Cause" Analysis)
+   → Need: Which groups claim each cause in top 10?
+   → Examples already found:
+      • Suicide: top 10 for men, NOT women
+      • Homicide: top 10 for Black, NOT White (need to confirm by age)
+      • Alzheimer's: top 7 only for Asian/White
+      • Liver disease: top 7 only for AI/AN
+      • Kidney disease: top 7 only for Black & Native Hawaiian/PI
+   → Why: Identify health disparities + group-specific crises
+
+================================================================================
+NEXT PHASE: 04b-viz-social.ipynb
+================================================================================
+
+Purpose: Convert 3 production-ready charts to Altair with:
+  - @unwelcomedata watermark overlay
+  - Platform presets (Twitter landscape 1200×675, Instagram 1080×1080)
+  - Color accessibility testing
+  - SVG + PNG export formats
+
+Expected timeline: 1-2 hours to create + test
+
+Social media campaign draft: See SOCIAL-VIZ-READY.md
+
+================================================================================
+KEY FINDINGS FOR SOCIAL MEDIA
+================================================================================
+
+FINDING #1: If abortion were a cause of death, it would rank #2-3
+   Chart: 01_national_without_vs_with.png
+   Data: 1.124M abortions vs 2.8M total deaths
+   Impact: Shows scale of abortion relative to other causes
+
+FINDING #2: Men are 4x more likely to die by suicide; women 2x more likely 
+            to die by Alzheimer's
+   Chart: 03_causes_by_sex_national.png
+   Data: Suicide 79.8% male, Alzheimer's 67.9% female
+   Impact: Stark sex differences in mortality patterns
+   Note: Alzheimer's increase likely due to female life expectancy advantage
+
+FINDING #3: Abortion's rank as leading cause varies by race
+   Chart: 03b_*.png (White & Black versions)
+   Data: Proportional estimates by race
+   Impact: Health equity angle—different implications by demographic
+
+================================================================================
+GIT COMMITS THIS SESSION
+================================================================================
+
+bf4a0a9 - feat: 04-viz.ipynb with all 6 charts, display name consistency
+6c12e08 - refactor: 04-viz.ipynb updates - stacked charts, race comparisons
+1ee86fa - docs: ANALYSIS-FINDINGS.md - notable patterns for social media
+844dc57 - docs: PROJECT-STATUS.md - session handoff with exploration backlog
+58f718d - docs: SOCIAL-VIZ-READY.md - 3 publication-ready charts with messaging
+
+================================================================================
+QUESTIONS FOR NEXT SESSION
+================================================================================
+
+1. Should we attempt to find perpetrator race data (NVDRS/UCR)?
+   - Effort level: Unknown (may need external data source)
+   - Value: High (politically important for homicide messaging)
+
+2. Can we get accident sub-types from WONDER?
+   - Effort: May require new data query or different interface
+   - Value: High (understanding leading cause of death)
+
+3. How deep should "unique cause" analysis go?
+   - All 52 causes = comprehensive but time-consuming
+   - Top 20 causes = focused, faster
+   - Recommend: Top 20 + any outliers
+
+4. Publishing timeline?
+   - 3 definite charts ready now
+   - Exploration backlog could yield 3-5 more charts
+   - Suggest: Publish Phase 1 (3 charts) now + Phase 2 (exploration) in 1-2 weeks
+
+================================================================================
+RESOURCES & REFERENCES
+================================================================================
+
+Project files:
+  - data/project.duckdb (25 tables, all data loaded)
+  - export/abortion_cause_of_death_v1.csv (master comparison)
+  - notebooks/04-viz.ipynb (all exploratory code)
+  - notebooks/04b-viz-social.ipynb (TBD - Altair export)
+
+Data sources:
+  - CDC WONDER: https://wonder.cdc.gov/
+  - Guttmacher: https://www.guttmacher.org/
+  - CDC NVDRS: https://wisqars.cdc.gov/nvdrs (if pursuing perpetrator race)
+  - FBI UCR: https://ucr.fbi.gov/ (if pursuing homicide data)
+
+Social media templates: See SOCIAL-VIZ-READY.md
+
+================================================================================
+STATUS: READY FOR NEXT SESSION
+================================================================================
+
+✓ Database: Connected and ready
+✓ Charts: 6 exploratory + 3 publication-ready
+✓ Analysis: Complete with findings documented
+✓ Documentation: PROJECT-STATUS.md + SOCIAL-VIZ-READY.md + ANALYSIS-FINDINGS.md
+✓ Git: Clean, commits documented
+✓ Backlog: Clearly prioritized for next work
+
+No blockers. Ready to start next session with exploration backlog.
+
+================================================================================
