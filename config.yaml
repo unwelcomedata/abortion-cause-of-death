@@ -15,17 +15,57 @@ settings:
   duckdb_file: data/project.duckdb   # single file DB for the project
 
 sources:
-  # Define each data source here before ingesting.
-  # url:        full URL to fetch
-  # type:       html_table | html_scrape | csv | json
-  # table_index: (html_table only) zero-based index of the target <table>
-  # js_render:  true if the page requires Playwright (JS-rendered)
-  # Example:
-  # fatalities:
-  #   url: https://example.gov/data/fatalities
-  #   type: html_table
-  #   table_index: 0
-  #   js_render: false
+  # All WONDER files were downloaded manually via the interactive query form.
+  # They are tab-separated with a notes/footer section that must be stripped.
+
+  wonder_mortality_2024:
+    description: "CDC WONDER Underlying Cause of Death — Race × Sex × ICD-10 113 Cause, 2024"
+    url: https://wonder.cdc.gov/ucd-icd10-expanded.html
+    type: local_tsv
+    file: data/raw/wonder_mortality_2024.tsv
+    dimensions: ["Single Race 6", "Sex", "ICD-10 113 Cause List"]
+    year: 2024
+    retrieved: "2025-08-17"
+    notes: "Query: Group by Single Race 6, Sex, ICD-10 113 Cause List. All ages, both sexes, all races. Year 2024."
+
+  wonder_mortality_ages_2024:
+    description: "CDC WONDER Underlying Cause of Death — Race × Age × ICD-10 113 Cause, 2024"
+    url: https://wonder.cdc.gov/ucd-icd10-expanded.html
+    type: local_tsv
+    file: data/raw/wonder_mortality_ages_2024.tsv
+    dimensions: ["Single Race 6", "Five-Year Age Groups", "ICD-10 113 Cause List"]
+    year: 2024
+    retrieved: "2025-08-17"
+    notes: "Query: Group by Single Race 6, Five-Year Age Groups, ICD-10 113 Cause List. Year 2024."
+
+  wonder_mortality_gender_2024:
+    description: "CDC WONDER Underlying Cause of Death — Sex × Age × ICD-10 113 Cause, 2024"
+    url: https://wonder.cdc.gov/ucd-icd10-expanded.html
+    type: local_tsv
+    file: data/raw/wonder_mortality_gender_2024.tsv
+    dimensions: ["Sex", "Five-Year Age Groups", "ICD-10 113 Cause List"]
+    year: 2024
+    retrieved: "2025-08-17"
+    notes: "Query: Group by Sex, Five-Year Age Groups, ICD-10 113 Cause List. Year 2024. Primary file for female reproductive-age analysis."
+
+  wonder_mortality_gender_2018_2024:
+    description: "CDC WONDER Underlying Cause of Death — Sex × Race × ICD-10 113 Cause, 2018–2024 aggregate"
+    url: https://wonder.cdc.gov/ucd-icd10-expanded.html
+    type: local_tsv
+    file: data/raw/wonder_mortality_gender_2018_2024.tsv
+    dimensions: ["Sex", "Single Race 6", "ICD-10 113 Cause List"]
+    year: "2018-2024"
+    retrieved: "2025-08-17"
+    notes: "Query: Group by Sex, Single Race 6, ICD-10 113 Cause List. Years 2018-2024 aggregated. Multi-year reference."
+
+  guttmacher_abortions:
+    description: "Guttmacher Institute — U.S. abortion estimates (national total + age breakdown)"
+    url: https://www.guttmacher.org/article/2024/03/new-data-indicate-abortions-increased-2023
+    type: local_csv
+    file: data/raw/guttmacher_abortions.csv
+    year: 2023
+    retrieved: "2025-08-17"
+    notes: "Manually compiled from Guttmacher published report. National total and age-group proportions. Primary source for abortion counts."
 
 export:
   formats:
