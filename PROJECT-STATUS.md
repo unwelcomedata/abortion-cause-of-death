@@ -44,6 +44,30 @@
 
 ## 🔍 EXPLORATION BACKLOG (Next Session)
 
+### HIGHEST PRIORITY: Brand Color Palette for Abortion Project
+
+#### **Color Palette Research & Development**
+- **Goal:** Establish consistent red/blue or pink/blue color scheme for this project
+- **Requirements:**
+  - Must align with @unwelcomedata brand identity
+  - Need to support:
+    * Sex comparisons (Female/Male split) - currently using indianred vs steelblue
+    * Abortion emphasis (red highlight for abortion bars in Chart 1)
+    * Race-specific comparisons (need distinct colors for demographic groups)
+    * Accessibility: test with colorblind palette checker
+  - Considerations:
+    * Current palette: steelblue (#4682B4) + indianred (#CD5C5C) + red (#FF0000 for abortion)
+    * Alternative: test pink/magenta variants instead of red
+    * Must be distinguishable in grayscale for print
+    * Should work across all chart types (stacked, side-by-side, small multiples)
+- **Deliverables:**
+  - Finalized color palette (hex codes) with names
+  - Update DISPLAY_NAMES mapping (if adding brand color names)
+  - Apply to all existing charts (04-viz.ipynb, later 04b-viz-social.ipynb)
+  - Create color reference document in project root
+  - Test accessibility (colorblind + grayscale)
+- **Timeline:** 30-45 minutes for exploration + testing
+
 ### High Priority: Detailed Analysis Needed
 
 #### 1. **Accidents Breakdown**
@@ -108,6 +132,14 @@
 
 ## 🎯 NEXT SESSION TASKS
 
+### Phase 0: Brand Color Palette (FIRST - 45 min)
+- [ ] Research @unwelcomedata existing color palettes (check project-template or shared resources)
+- [ ] Explore red/blue and pink/blue combinations
+- [ ] Test accessibility (colorblind checker, grayscale)
+- [ ] Finalize hex codes and names
+- [ ] Update all chart code with new palette
+- [ ] Create COLOR-PALETTE.md in project root
+
 ### Phase 1: Validate Existing Findings (30 min)
 - [ ] Run Chart 4 & Chart 5 exploratory analysis again
 - [ ] Double-check sex/race patterns identified
@@ -162,6 +194,13 @@ bf4a0a9 - feat: 04-viz.ipynb (initial 6 charts)
 ---
 
 ## 🚀 SOCIAL MEDIA CAMPAIGN (DRAFT)
+
+### Outstanding Tasks Before Launch
+- ⏳ **Brand Color Palette** (needed before final export)
+  - Finalize red/blue or pink/blue scheme
+  - Ensure consistency with @unwelcomedata brand
+  - Test accessibility
+  - Update all charts
 
 ### Post 1: National Abortion Impact
 - **Chart:** Chart 1 (national without vs. with)
