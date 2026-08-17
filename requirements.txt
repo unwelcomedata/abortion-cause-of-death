@@ -15,6 +15,7 @@ ipykernel==6.29.5
 
 # --- viz / social export ---
 matplotlib==3.10.3
+seaborn==0.13.2              # statistical data visualization
 Pillow==12.3.0               # image export and resizing
 altair==5.5.0                # Altair declarative viz (social export layer)
 vl-convert-python==1.9.0    # Vega-Lite to PNG (no browser needed)
