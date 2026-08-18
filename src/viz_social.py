@@ -71,18 +71,196 @@ alt.themes.enable("unwelcomedata")
 
 
 # ---------------------------------------------------------------------------
-# Chart builders — fill in per project
+# Chart builders — project-specific for abortion-cause-of-death
 # ---------------------------------------------------------------------------
 
-# TODO: Copy and adapt chart functions from dui-by-state/src/viz_social.py
-# as needed for this project. Common starting points:
-#
-# - social_scatter(df, x, y, color_by, title, subtitle, source, preset)
-# - social_ranked_bars(df, x, y, title, top_n, bottom_n, preset)
-# - social_diverging_bars(df, value_col, expected, title, top_n, preset)
-# - social_comparison(df, group_col, value_col, title, preset)
-# - social_trend(df, x, y, title, preset)
-# - social_choropleth(df, column, title, mode, preset)
+def social_comparison_bars(
+    df: pd.DataFrame,
+    x_col: str,
+    y_col: str,
+    color_col: str | None = None,
+    title: str = "",
+    subtitle: str = "",
+    source: str = "WONDER CDC",
+    preset: str = "twitter_landscape",
+) -> alt.Chart:
+    """Grouped horizontal bars comparing categories.
+    
+    Args:
+        df: DataFrame with data
+        x_col: Column for bar lengths (deaths, counts, etc.)
+        y_col: Column for bar grouping (causes, etc.)
+        color_col: Optional column for color distinction
+        title: Chart title
+        subtitle: Subtitle/description
+        source: Data source attribution
+        preset: Platform preset (twitter_landscape, etc.)
+    
+    Returns:
+        Altair Chart object (ready for save_social)
+    """
+    w_px, h_px, _ = PRESETS[preset]
+    width = w_px - 120
+    height = h_px - 180
+    
+    if color_col:
+        color_scale = alt.Scale(domain=df[color_col].unique().tolist(),
+                                range=[PALETTE["cat_2"], PALETTE["cat_5"]])
+        color = alt.Color(f"{color_col}:N", scale=color_scale, title=color_col)
+    else:
+        color = alt.value(PALETTE["primary"])
+    
+    bars = alt.Chart(df).mark_barh().encode(
+        x=alt.X(f"{x_col}:Q", title="Deaths"),
+        y=alt.Y(f"{y_col}:N", title="", sort="-x"),
+        color=color,
+        tooltip=[y_col, x_col],
+    ).properties(
+        width=width,
+        height=height,
+        title=alt.TitleFrame(
+            text=title,
+            subtitle=subtitle,
+            anchor="start",
+            offset=10,
+        ),
+    )
+    
+    return bars.configure_axis(
+        labelFontSize=10,
+        titleFontSize=11,
+    )
+
+
+def social_sex_stacked_bars(
+    df: pd.DataFrame,
+    title: str = "",
+    subtitle: str = "",
+    source: str = "WONDER CDC",
+    preset: str = "twitter_landscape",
+) -> alt.Chart:
+    """Horizontal stacked bars showing sex breakdown for top 10 causes.
+    
+    DataFrame should have columns: cause, male_deaths, female_deaths
+    
+    Args:
+        df: Must include: cause, male_deaths, female_deaths
+        title: Chart title
+        subtitle: Subtitle
+        source: Data source
+        preset: Platform preset
+    
+    Returns:
+        Altair Chart object
+    """
+    from shared.viz import SEX_COLORS
+    
+    w_px, h_px, _ = PRESETS[preset]
+    width = w_px - 120
+    height = h_px - 180
+    
+    # Melt for Altair stacking
+    df_long = df.melt(
+        id_vars=["cause"],
+        value_vars=["male_deaths", "female_deaths"],
+        var_name="sex",
+        value_name="deaths"
+    )
+    df_long["sex"] = df_long["sex"].str.replace("_deaths", "").str.capitalize()
+    
+    color_scale = alt.Scale(
+        domain=["Male", "Female"],
+        range=[SEX_COLORS.get("Male", PALETTE["cat_2"]),
+               SEX_COLORS.get("Female", PALETTE["cat_5"])]
+    )
+    
+    bars = alt.Chart(df_long).mark_bar().encode(
+        x=alt.X("deaths:Q", title="Deaths"),
+        y=alt.Y("cause:N", title="", sort="-x"),
+        color=alt.Color("sex:N", scale=color_scale, title="Sex"),
+        tooltip=["cause", "sex", "deaths"],
+    ).properties(
+        width=width,
+        height=height,
+        title=alt.TitleFrame(
+            text=title,
+            subtitle=subtitle,
+            anchor="start",
+            offset=10,
+        ),
+    )
+    
+    return bars.configure_axis(
+        labelFontSize=10,
+        titleFontSize=11,
+    )
+
+
+def social_side_by_side(
+    df_left: pd.DataFrame,
+    df_right: pd.DataFrame,
+    value_col: str = "deaths",
+    label_col: str = "cause",
+    title: str = "",
+    subtitle: str = "",
+    left_title: str = "Without",
+    right_title: str = "With",
+    preset: str = "twitter_landscape",
+) -> alt.Chart:
+    """Side-by-side grouped bars (e.g., "without abortion" vs "with abortion").
+    
+    Args:
+        df_left: Data for left side
+        df_right: Data for right side
+        value_col: Column name for bar heights
+        label_col: Column name for bar labels
+        title: Main title
+        subtitle: Subtitle
+        left_title: Label for left group
+        right_title: Label for right group
+        preset: Platform preset
+    
+    Returns:
+        Altair Chart object
+    """
+    w_px, h_px, _ = PRESETS[preset]
+    width = w_px - 120
+    height = h_px - 180
+    
+    # Add group identifier
+    df_left["comparison"] = left_title
+    df_right["comparison"] = right_title
+    df_combined = pd.concat([df_left, df_right], ignore_index=True)
+    
+    # Sort by left side values for consistent ordering
+    left_order = df_left.sort_values(value_col, ascending=True)[label_col].tolist()
+    
+    color_scale = alt.Scale(
+        domain=[left_title, right_title],
+        range=[PALETTE["cat_2"], PALETTE["accent"]]
+    )
+    
+    chart = alt.Chart(df_combined).mark_bar().encode(
+        x=alt.X(f"{value_col}:Q", title="Deaths"),
+        y=alt.Y(f"{label_col}:N", title="", sort=left_order),
+        color=alt.Color("comparison:N", scale=color_scale, title=""),
+        xOffset="comparison",
+        tooltip=[label_col, "comparison", value_col],
+    ).properties(
+        width=width,
+        height=height,
+        title=alt.TitleFrame(
+            text=title,
+            subtitle=subtitle,
+            anchor="start",
+            offset=10,
+        ),
+    )
+    
+    return chart.configure_axis(
+        labelFontSize=10,
+        titleFontSize=11,
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -1,14 +1,14 @@
 # Project Status: abortion-cause-of-death
 
-**Last Updated:** August 17, 2026  
-**Current Phase:** Exploratory Viz Complete → Ready for Social Media Publishing + Deep Dives  
+**Last Updated:** August 18, 2026  
+**Current Phase:** ✓ SOCIAL MEDIA CHARTS COMPLETE → Ready for Posting  
 **Repo:** `unwelcomedata/abortion-cause-of-death` (private)
 
 ---
 
 ## ✓ COMPLETE & READY FOR SOCIAL VIZ
 
-### Production-Ready Charts (Commit `1ee86fa`)
+### Production-Ready Charts (Commit `1ee86fa` + Updated via Phase 5)
 
 1. **Chart 1: National Abortion Comparison**
    - File: `outputs/01_national_without_vs_with.png`
@@ -131,6 +131,46 @@
 ---
 
 ## 🎯 NEXT SESSION TASKS
+
+### ✓ Phase 0: Brand Color Palette (COMPLETE - Aug 17)
+Implemented @unwelcomedata brand palette (dark teal + oxidized red) across all visualizations.
+
+### ✓ Phase 1: Validate Existing Findings (COMPLETE - Aug 18)
+Re-ran all key analysis queries with current DuckDB tables. All findings validated:
+- Suicide: 79.8% Male (3.96x ratio) ✓
+- Alzheimer's: 67.9% Female (2.12x ratio) ✓
+- Accidents: 67.1% Male (2.04x ratio) ✓
+- Liver disease: 62.1% Male (1.64x ratio) ✓
+- Stroke: 56.1% Female (1.28x ratio) ✓
+
+### ✓ Phase 5: Social Media Charts (COMPLETE - Aug 18)
+Generated 4 publication-ready Altair charts (twitter_landscape, 1600×900px):
+- `01_abortion_comparison_national.png` (105 KB) — National top 10, without vs. with abortion
+- `02_top_10_causes_by_sex.png` (43 KB) — Stacked bars by sex
+- `03_abortion_comparison_race_white.png` (122 KB) — White population comparison
+- `04_abortion_comparison_race_black_or_african_american.png` (119 KB) — Black/African American comparison
+
+All charts include @unwelcomedata watermark and finalized brand palette.
+
+**Ready for social media posting!** Copy and posting strategy drafted in social-posts.md (local, not committed).
+
+---
+
+## 📋 REMAINING PHASES (Optional Deep Dives)
+
+### Phase 2: Accidents Deep Dive (NOT YET - Blocked on WONDER access)
+- Requires new CDC WONDER query for accident ICD-10 sub-types
+- User to pull data today
+
+### Phase 3: Homicide Research (NOT YET)
+- Perpetrator race data (NVDRS/UCR) — assess availability
+
+### Phase 4: "Unique Cause" Analysis (NOT YET)
+- Systematically identify causes unique to demographic groups
+
+---
+
+## 🎯 NEXT SESSION TASKS (PREVIOUS - ARCHIVED)
 
 ### Phase 0: Brand Color Palette (FIRST - 45 min)
 - [ ] Research @unwelcomedata existing color palettes (check project-template or shared resources)
