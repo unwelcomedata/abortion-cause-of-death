@@ -358,8 +358,9 @@ def _draw_watermark(img: Image.Image, text: str) -> Image.Image:
     text_w = bbox[2] - bbox[0]
     text_h = bbox[3] - bbox[1]
 
-    x = img.width - text_w - 20
-    y = img.height - text_h - 15
+    # Position: right-aligned with chart content area, below footer rule
+    x = img.width - text_w - 60
+    y = img.height - text_h - 20
 
     draw.text((x, y), text, fill=(156, 163, 175, 180), font=font)
     return img
