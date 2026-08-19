@@ -1,95 +1,82 @@
 # abortion-cause-of-death — Project Status
 
-**Last updated:** 2026-08-18
-**Status:** IN PROGRESS — Social viz charts 1-3 complete, next session adds side-by-side comparisons.
+**Last updated:** 2026-08-19
+**Status:** IN PROGRESS — Social viz complete (5 charts). Ready for posting plan.
 
 ---
 
-## Current Phase: Social Visualization (04b-viz-social)
+## Current Phase: Social Visualization Complete
 
-### Completed This Session
+### Charts (04b-viz-social.ipynb)
 
-1. **Chart 1: National abortion comparison** — DONE
-   - Title: "What if abortion was counted as a cause of death?"
-   - Subtitle: "Top 5 causes of death among all Americans, by sex (2024)"
-   - Stacked male (#005F73) / female (#E9D8A6) bars with % labels inside
-   - Abortion bar (#AE2012) with gestation age dividers (#fff5e6 vertical lines)
-   - Gestation labels: ≤9 wks (79%), 10-13 wks (14%) — smaller segments unlabeled
-   - Direct "Male"/"Female" labels (top-aligned, inside Heart disease bar)
-   - Total count to right of each bar (15px bold)
-   - Footer: rule + source attribution + @unwelcomedata watermark
+1. **Chart 1: Female vs Male top 10 (per 100k)** — DONE
+   - Side-by-side horizontal bars, shared x-scale
+   - Female: #E9D8A6 (vanilla custard) | Male: #005F73 (dark teal)
+   - Suicide highlighted #94D2BD on male panel, annotated "#16 for women"
+   - Template: `side_by_side_bars()` in `shared/chart_templates.py`
 
-2. **Chart 2: White race comparison** — DONE
-   - Same format as Chart 1, filtered to White Americans
-   - Abortion count: 337,200 (30% of national, Guttmacher Patient Survey 2021-2022)
-   - No gestation dividers (national proportions only)
+2. **Chart 1b: White vs Black top 10 (per 100k)** — DONE
+   - Same side-by-side template
+   - White: #CA6702 (burnt caramel) | Black: #EE9B00 (gold orange)
+   - Dual highlights (#BB3E03 accent):
+     - Suicide on White panel: "#13 for Black"
+     - Homicide on Black panel: "#19 for White"
 
-3. **Chart 3: Black race comparison** — DONE
-   - Same format, filtered to Black Americans
-   - Abortion count: 325,960 (29% of national)
-   - Subtitle: "Top 5 causes of death among Black Americans, by sex (2024)"
+3. **Chart 2: National Abortion Comparison** — DONE
+   - Stacked male/female bars with abortion inserted
+   - Gestation age dividers within abortion bar
+   - Direct segment labels, % inside, total count right
 
-### New Shared Assets Created
+4. **Charts 3 & 4: Abortion by Race (White & Black)** — DONE
+   - Same stacked format as Chart 2, filtered by race
+   - Race-specific abortion counts (Guttmacher 2024 proportions)
 
-- `shared/chart_templates.py` — Reusable chart functions:
-  - `stacked_horizontal_bar()` — standard stacked bar with all features
-  - `add_footer()` — standard footer (rule + source text) for any Altair chart
-- `shared/viz.py` — Updated:
-  - `SEX_COLORS`: Female=#ffe8cc, Male=#a8e0e0 (soft pastels)
-  - `TEXT_COLORS`: on_dark=#E9D8A6, on_light=#003049
-- `shared/bold_palettes.py` — Updated sex palette + text color constants
-- `color_palettes/bold/PALETTE-VIEWER.html` — Updated with text colors section + new sex colors
+### Key Design Decisions
 
-### Data Added This Session
-
-- `abortions` table now includes `race_pct` and `race_count` rows:
-  - NH White: 30% → 337,200
-  - Black: 29% → 325,960
-  - Latinx: 30% → 337,200
-  - Asian: 4% → 44,960
-  - Other/multi-race: 7% → 78,680
-  - Source: Guttmacher Abortion Patient Survey 2021-2022 applied to 2024 total
+- **Per-capita rates** for all comparison charts (sex, race). Absolute counts only for abortion insertion charts (since abortion has no population denominator).
+- **Shared x-scale** across panels for honest visual comparison.
+- **Stable ranking** uses `ORDER BY rate DESC, deaths DESC` to break ties.
+- **Color conventions**: Teal/vanilla for sex, gold/amber for race, red accent (#BB3E03) for both highlight bars.
 
 ---
 
-## Next Session Plan
+## Shared Assets Updated This Session
 
-### Charts to Build
-
-4. **Male vs Female side-by-side** (top 10 causes each, national)
-   - Two panels: left = male top 10, right = female top 10
-   - Using stacked bar template but adapted for side-by-side layout
-   - Same color scheme (#005F73 for male bars, #E9D8A6 for female bars)
-
-5. **White race side-by-side** (male vs female top 10)
-   - Same format as chart 4, filtered to White
-
-6. **Black race side-by-side** (male vs female top 10)
-   - Same format, filtered to Black
-
-### Template Work
-
-- Add `side_by_side_bars()` function to `shared/chart_templates.py`
-- May need to adapt for `alt.hconcat()` or faceted layout
+- `shared/chart_templates.py` — Added `side_by_side_bars()`:
+  - Supports `highlight` (right panel) and `highlight_left` (left panel)
+  - Per-bar color via `_bar_color` column with `scale=None`
+  - Annotation text (italic, #6B7280, positioned dx=62 from bar end)
+  - Configurable panel width, height, spacing, font sizes
 
 ---
 
-## Chart Style Reference (finalized)
+## Files Removed (iteration artifacts)
 
-| Element | Value |
-|---------|-------|
-| Male bar | #005F73 (Dark Teal) |
-| Female bar | #E9D8A6 (Vanilla Custard) |
-| Abortion bar | #AE2012 (Oxidized Iron) |
-| Gestation dividers | #fff5e6 (Pale Warm) |
-| Text on dark | #E9D8A6 |
-| Text on light | #003049 |
-| Total count text | #374151, 15px bold |
-| Pct label text | 13px bold |
-| Y-axis labels | 14px bold |
-| Footer rule | #D1D5DB, 1px |
-| Footer source text | #6B7280, 9px |
-| Watermark | @unwelcomedata, bottom-right, Pillow |
+- `FIX-SUMMARY.md` — debugging notes (no longer relevant)
+- `PALETTE-IMPLEMENTATION.md` — palette decisions captured in `shared/viz.py`
+- `SESSION-SUMMARY.txt` — old session handoff
+- `SOCIAL-VIZ-READY.md` — outdated chart list
+- Stale PNGs in `outputs/social/` (18 files removed)
+
+---
+
+## What Remains
+
+- `PROJECT-PLAN.md` — data methodology and scope decisions (keep)
+- `ANALYSIS-FINDINGS.md` — statistical findings from the data (keep)
+- `SOURCES.md` — full attribution (keep)
+- `README.md` — project overview (keep)
+
+---
+
+## Next Steps (if reopening)
+
+- [ ] Write social posting plan (copy, alt text, thread strategy)
+- [ ] Consider additional charts:
+  - Alzheimer's disparity by race (2x higher for White — age structure effect)
+  - Diabetes/kidney cluster (30% higher rate for Black)
+  - Accidents by sex × race small multiples
+- [ ] Age-adjusted rates version (for methodological rigor in academic contexts)
 
 ---
 
@@ -97,4 +84,4 @@
 
 - Python: `/opt/anaconda3/envs/data_projects/bin/python` (3.13)
 - DuckDB: `data/project.duckdb`
-- GitHub: `unwelcomedata/abortion-cause-of-death` (private, main branch, clean)
+- GitHub: `unwelcomedata/abortion-cause-of-death` (private, main branch)
