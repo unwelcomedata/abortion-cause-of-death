@@ -63,3 +63,6 @@ env/
 *.log
 tmp/
 temp/
+
+# ── Social media planning (local only) ────────────────────────────────────────
+social-posts.md
