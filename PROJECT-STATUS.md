@@ -1,294 +1,100 @@
-# Project Status: abortion-cause-of-death
+# abortion-cause-of-death — Project Status
 
-**Last Updated:** August 18, 2026  
-**Current Phase:** ✓ SOCIAL MEDIA CHARTS COMPLETE → Ready for Posting  
-**Repo:** `unwelcomedata/abortion-cause-of-death` (private)
-
----
-
-## ✓ COMPLETE & READY FOR SOCIAL VIZ
-
-### Production-Ready Charts (Commit `1ee86fa` + Updated via Phase 5)
-
-1. **Chart 1: National Abortion Comparison**
-   - File: `outputs/01_national_without_vs_with.png`
-   - Format: Side-by-side (without abortion | with abortion)
-   - Status: **DEFINITE** for social media
-   - Message: "If abortion were the leading cause of death in the US..."
-
-2. **Chart 3: Top 10 Causes by Sex (Stacked)**
-   - File: `outputs/03_causes_by_sex_national.png`
-   - Format: Horizontal stacked bars, percent labels within bar, total count on right
-   - Status: **DEFINITE** for social media
-   - Message: Focus on dramatic sex differences (suicide 79.8% male, Alzheimer's 67.9% female)
-
-3. **Chart 3b: Abortion Comparison by Race (2 figures)**
-   - Files: `outputs/03b_national_without_vs_with_race_white.png`
-   - Files: `outputs/03b_national_without_vs_with_race_black_or_african_american.png`
-   - Format: Matches Chart 1 (side-by-side comparison)
-   - Status: **DEFINITE** for social media
-   - Messages: Race-specific abortion impact comparison
-
-### Key Findings Identified
-
-| Finding | Data Point | Chart |
-|---------|-----------|-------|
-| Suicide Dominance in Males | 79.8% male (4.0x vs female) | Chart 3 |
-| Alzheimer's Dominance in Females | 67.9% female (2.1x vs male) | Chart 3 |
-| Accidents Male-Heavy | 65.7% male | Chart 3 |
-| Liver Disease Male-Heavy | 61.4% male | Chart 3 |
-| National Abortion Impact | Would be #2-3 leading cause | Chart 1 |
-| Race-Specific Abortion Impact | Different ranking by race | Chart 3b |
+**Last updated:** 2026-08-18
+**Status:** IN PROGRESS — Social viz charts 1-3 complete, next session adds side-by-side comparisons.
 
 ---
 
-## 🔍 EXPLORATION BACKLOG (Next Session)
+## Current Phase: Social Visualization (04b-viz-social)
 
-### HIGHEST PRIORITY: Brand Color Palette for Abortion Project
+### Completed This Session
 
-#### **Color Palette Research & Development**
-- **Goal:** Establish consistent red/blue or pink/blue color scheme for this project
-- **Requirements:**
-  - Must align with @unwelcomedata brand identity
-  - Need to support:
-    * Sex comparisons (Female/Male split) - currently using indianred vs steelblue
-    * Abortion emphasis (red highlight for abortion bars in Chart 1)
-    * Race-specific comparisons (need distinct colors for demographic groups)
-    * Accessibility: test with colorblind palette checker
-  - Considerations:
-    * Current palette: steelblue (#4682B4) + indianred (#CD5C5C) + red (#FF0000 for abortion)
-    * Alternative: test pink/magenta variants instead of red
-    * Must be distinguishable in grayscale for print
-    * Should work across all chart types (stacked, side-by-side, small multiples)
-- **Deliverables:**
-  - Finalized color palette (hex codes) with names
-  - Update DISPLAY_NAMES mapping (if adding brand color names)
-  - Apply to all existing charts (04-viz.ipynb, later 04b-viz-social.ipynb)
-  - Create color reference document in project root
-  - Test accessibility (colorblind + grayscale)
-- **Timeline:** 30-45 minutes for exploration + testing
+1. **Chart 1: National abortion comparison** — DONE
+   - Title: "What if abortion was counted as a cause of death?"
+   - Subtitle: "Top 5 causes of death among all Americans, by sex (2024)"
+   - Stacked male (#005F73) / female (#E9D8A6) bars with % labels inside
+   - Abortion bar (#AE2012) with gestation age dividers (#fff5e6 vertical lines)
+   - Gestation labels: ≤9 wks (79%), 10-13 wks (14%) — smaller segments unlabeled
+   - Direct "Male"/"Female" labels (top-aligned, inside Heart disease bar)
+   - Total count to right of each bar (15px bold)
+   - Footer: rule + source attribution + @unwelcomedata watermark
 
-### High Priority: Detailed Analysis Needed
+2. **Chart 2: White race comparison** — DONE
+   - Same format as Chart 1, filtered to White Americans
+   - Abortion count: 337,200 (30% of national, Guttmacher Patient Survey 2021-2022)
+   - No gestation dividers (national proportions only)
 
-#### 1. **Accidents Breakdown**
-- **Question:** What types of accidents? Motor vehicle? Falls? Suffocation? Poisoning?
-- **Why:** Sensationalized finding—accidents are surprisingly #3-4 overall cause
-- **Data Needed:**
-  - ICD-10 code breakdown (V01-Y89 range for "accidents")
-  - Check if CDC WONDER provides sub-category detail for "Accidents (unintentional injuries)"
-  - May need to access raw WONDER query interface or different data cube
-- **Hypothesis:** Traffic dominates; falls in elderly? Poisoning (opioids) in younger cohorts?
-- **Social Angle:** Different messaging for "young people dying in car crashes" vs "elderly dying from falls"
+3. **Chart 3: Black race comparison** — DONE
+   - Same format, filtered to Black Americans
+   - Abortion count: 325,960 (29% of national)
+   - Subtitle: "Top 5 causes of death among Black Americans, by sex (2024)"
 
-#### 2. **Homicide by Perpetrator Race**
-- **Question:** For homicides (top 10 for Black/African American), what % killed by which races?
-- **Why:** Politically charged; need accurate data to counter stereotypes or correct assumptions
-- **Data Needed:**
-  - CDC WONDER likely doesn't have "perpetrator race" (victim-centric)
-  - May need FBI UCR (Uniform Crime Reporting) or CDC's violence data products
-  - Check: CDC National Violent Death Reporting System (NVDRS) — includes perpetrator info
-  - Alternative: NIJ (National Institute of Justice) homicide data
-- **Expected Pattern:** Likely majority same-race; smaller % inter-racial
-- **Social Angle:** "Most homicides are intra-racial, not inter-racial"
+### New Shared Assets Created
 
-#### 3. **Homicide by Age Breakdown**
-- **Question:** At what age is homicide the leading/top-10 cause?
-- **Why:** Expect peak in teens/20s; validate if true across races
-- **Data Available:** mort_by_sex_age table (sex × age × cause)
-- **Query:** Filter to homicide, pivot by age group, show trend
-- **Social Angle:** "Homicide is leading cause of death for Black men ages 15-34" (if true)
+- `shared/chart_templates.py` — Reusable chart functions:
+  - `stacked_horizontal_bar()` — standard stacked bar with all features
+  - `add_footer()` — standard footer (rule + source text) for any Altair chart
+- `shared/viz.py` — Updated:
+  - `SEX_COLORS`: Female=#ffe8cc, Male=#a8e0e0 (soft pastels)
+  - `TEXT_COLORS`: on_dark=#E9D8A6, on_light=#003049
+- `shared/bold_palettes.py` — Updated sex palette + text color constants
+- `color_palettes/bold/PALETTE-VIEWER.html` — Updated with text colors section + new sex colors
 
-#### 4. **Cause-Specific Demographics: "Unique to Group" Analysis**
-- **Question:** For each cause, which demographic group(s) claim it in top 10?
-- **Why:** Identify health disparities and group-specific crises
-- **Data Structure:**
-  - By sex: Which causes in men's top 10 but not women's (and vice versa)?
-  - By race: Which causes in some races' top 10 but not others?
-  - By age: Which causes age-specific (teen suicides vs. Alzheimer's in 85+)?
-  - By sex + race: Which causes unique to specific intersections?
-- **Examples Already Found:**
-  - Suicide: top 10 for males, not females; top 7 for Multi-race & Native Hawaiian/PI only
-  - Alzheimer's: top 7 for Asian & White only (not Black, AI/AN, Native Hawaiian, Multi-race)
-  - Liver disease: top 7 for AI/AN only
-  - Kidney disease: top 7 for Black & Native Hawaiian/PI only
-- **Social Angle:** "Homicide is the leading cause of death for young Black men—but not for White men"
+### Data Added This Session
+
+- `abortions` table now includes `race_pct` and `race_count` rows:
+  - NH White: 30% → 337,200
+  - Black: 29% → 325,960
+  - Latinx: 30% → 337,200
+  - Asian: 4% → 44,960
+  - Other/multi-race: 7% → 78,680
+  - Source: Guttmacher Abortion Patient Survey 2021-2022 applied to 2024 total
 
 ---
 
-## 📊 DATA SOURCES & AVAILABILITY
+## Next Session Plan
 
-### Currently Loaded (in `project.duckdb`)
-- ✓ WONDER 2024: Mortality by sex × age × cause
-- ✓ WONDER 2024: Mortality by race × sex × cause
-- ✓ WONDER 2024: Mortality by race × age × cause
-- ✓ Guttmacher: National abortion count + age breakdown
+### Charts to Build
 
-### NOT YET LOADED (Needed for Explorations)
-- ✗ Accident sub-types (ICD-10 V01-Y89 detail) — may need new WONDER query
-- ✗ Perpetrator race for homicides — likely need NVDRS or UCR data
-- ✗ Detailed age breakdowns (5-year groups vs. single years) — may have more granularity
+4. **Male vs Female side-by-side** (top 10 causes each, national)
+   - Two panels: left = male top 10, right = female top 10
+   - Using stacked bar template but adapted for side-by-side layout
+   - Same color scheme (#005F73 for male bars, #E9D8A6 for female bars)
 
----
+5. **White race side-by-side** (male vs female top 10)
+   - Same format as chart 4, filtered to White
 
-## 🎯 NEXT SESSION TASKS
+6. **Black race side-by-side** (male vs female top 10)
+   - Same format, filtered to Black
 
-### ✓ Phase 0: Brand Color Palette (COMPLETE - Aug 17)
-Implemented @unwelcomedata brand palette (dark teal + oxidized red) across all visualizations.
+### Template Work
 
-### ✓ Phase 1: Validate Existing Findings (COMPLETE - Aug 18)
-Re-ran all key analysis queries with current DuckDB tables. All findings validated:
-- Suicide: 79.8% Male (3.96x ratio) ✓
-- Alzheimer's: 67.9% Female (2.12x ratio) ✓
-- Accidents: 67.1% Male (2.04x ratio) ✓
-- Liver disease: 62.1% Male (1.64x ratio) ✓
-- Stroke: 56.1% Female (1.28x ratio) ✓
-
-### ✓ Phase 5: Social Media Charts (COMPLETE - Aug 18)
-Generated 4 publication-ready Altair charts (twitter_landscape, 1600×900px):
-- `01_abortion_comparison_national.png` (105 KB) — National top 10, without vs. with abortion
-- `02_top_10_causes_by_sex.png` (43 KB) — Stacked bars by sex
-- `03_abortion_comparison_race_white.png` (122 KB) — White population comparison
-- `04_abortion_comparison_race_black_or_african_american.png` (119 KB) — Black/African American comparison
-
-All charts include @unwelcomedata watermark and finalized brand palette.
-
-**Ready for social media posting!** Copy and posting strategy drafted in social-posts.md (local, not committed).
+- Add `side_by_side_bars()` function to `shared/chart_templates.py`
+- May need to adapt for `alt.hconcat()` or faceted layout
 
 ---
 
-## 📋 REMAINING PHASES (Optional Deep Dives)
+## Chart Style Reference (finalized)
 
-### Phase 2: Accidents Deep Dive (NOT YET - Blocked on WONDER access)
-- Requires new CDC WONDER query for accident ICD-10 sub-types
-- User to pull data today
-
-### Phase 3: Homicide Research (NOT YET)
-- Perpetrator race data (NVDRS/UCR) — assess availability
-
-### Phase 4: "Unique Cause" Analysis (NOT YET)
-- Systematically identify causes unique to demographic groups
-
----
-
-## 🎯 NEXT SESSION TASKS (PREVIOUS - ARCHIVED)
-
-### Phase 0: Brand Color Palette (FIRST - 45 min)
-- [ ] Research @unwelcomedata existing color palettes (check project-template or shared resources)
-- [ ] Explore red/blue and pink/blue combinations
-- [ ] Test accessibility (colorblind checker, grayscale)
-- [ ] Finalize hex codes and names
-- [ ] Update all chart code with new palette
-- [ ] Create COLOR-PALETTE.md in project root
-
-### Phase 1: Validate Existing Findings (30 min)
-- [ ] Run Chart 4 & Chart 5 exploratory analysis again
-- [ ] Double-check sex/race patterns identified
-- [ ] Document top 3 findings for social media campaign
-
-### Phase 2: Accidents Deep Dive (45 min)
-- [ ] Query CDC WONDER for accident ICD-10 breakdown (if available)
-- [ ] If not in WONDER, document limitation
-- [ ] Create hypothesis-driven chart: Motor vehicle vs. other accidents by age/sex
-
-### Phase 3: Homicide Research (45 min)
-- [ ] Research NVDRS/UCR data availability and access
-- [ ] Assess effort to integrate perpetrator race data
-- [ ] Create homicide by age chart (if data allows)
-
-### Phase 4: Build "Unique Cause" Analysis (60 min)
-- [ ] Systematically iterate through all 52 causes
-- [ ] Identify which demographic groups claim each in top 10
-- [ ] Create summary table: Cause × (Sex, Race, Age Group) showing unique claim
-- [ ] Visualize top 5-10 most "disparate" causes (biggest demographic concentration)
-
-### Phase 5: Prepare for 04b-viz-social.ipynb (60 min)
-- [ ] Finalize which charts → Altair for publication-ready PNG export
-- [ ] Add @unwelcomedata watermark
-- [ ] Create twitter_landscape presets where needed
-- [ ] Draft social media copy for each chart
+| Element | Value |
+|---------|-------|
+| Male bar | #005F73 (Dark Teal) |
+| Female bar | #E9D8A6 (Vanilla Custard) |
+| Abortion bar | #AE2012 (Oxidized Iron) |
+| Gestation dividers | #fff5e6 (Pale Warm) |
+| Text on dark | #E9D8A6 |
+| Text on light | #003049 |
+| Total count text | #374151, 15px bold |
+| Pct label text | 13px bold |
+| Y-axis labels | 14px bold |
+| Footer rule | #D1D5DB, 1px |
+| Footer source text | #6B7280, 9px |
+| Watermark | @unwelcomedata, bottom-right, Pillow |
 
 ---
 
-## 📁 KEY FILES
+## Environment
 
-| File | Purpose | Status |
-|------|---------|--------|
-| `notebooks/04-viz.ipynb` | Exploratory charts + analysis | ✓ Complete |
-| `ANALYSIS-FINDINGS.md` | Documented findings | ✓ Complete |
-| `PROJECT-STATUS.md` | This file | 📝 In progress |
-| `notebooks/04b-viz-social.ipynb` | Altair publication charts | 📅 Next |
-| `data/project.duckdb` | DuckDB with all tables | ✓ Loaded |
-| `export/abortion_cause_of_death_v1.csv` | Master comparison table | ✓ Ready |
-
----
-
-## 💾 GIT HISTORY
-
-```
-1ee86fa - docs: ANALYSIS-FINDINGS.md (notable patterns)
-6c12e08 - refactor: 04-viz.ipynb (stacked charts, race comparisons)
-bf4a0a9 - feat: 04-viz.ipynb (initial 6 charts)
-3e5a912 - chore: scaffold abortion-cause-of-death
-```
-
----
-
-## 🚀 SOCIAL MEDIA CAMPAIGN (DRAFT)
-
-### Outstanding Tasks Before Launch
-- ⏳ **Brand Color Palette** (needed before final export)
-  - Finalize red/blue or pink/blue scheme
-  - Ensure consistency with @unwelcomedata brand
-  - Test accessibility
-  - Update all charts
-
-### Post 1: National Abortion Impact
-- **Chart:** Chart 1 (national without vs. with)
-- **Message:** "If abortion were a cause of death, it would rank as the 2nd-3rd leading cause in the US"
-- **Hashtags:** #data #publichealth #womenshealth
-
-### Post 2: Sex Differences in Mortality
-- **Chart:** Chart 3 (stacked sex comparison)
-- **Message A:** "Men are 4x more likely to die by suicide. Women are 2x more likely to die of Alzheimer's."
-- **Message B:** (Individual charts for suicide and Alzheimer's if deeper dive successful)
-- **Hashtags:** #mentalhealth #genderhealth #data
-
-### Post 3: Race-Specific Abortion Impact
-- **Chart:** Chart 3b (White version) + Chart 3b (Black version)
-- **Message:** "How would abortion rank as a leading cause of death... if it were counted? Varies by race."
-- **Hashtags:** #equity #health #data
-
-### Post 4+: Deep Dive Findings (TBD based on explorations)
-- Homicide age/race patterns
-- Accident types breakdown
-- "Unique cause" disparities
-
----
-
-## ⚠️ LIMITATIONS & CAVEATS
-
-1. **Perpetrator race not available in WONDER** — may require external data source
-2. **Accident sub-types may not be queryable via WONDER interface** — check data cube options
-3. **Age groups are 5-year bins** — not suitable for granular "peak age" analysis without sub-county query
-4. **No adjustment for population size** — All numbers are raw counts, not rates per 100k
-5. **Binary sex only** — WONDER data doesn't distinguish non-binary categories
-
----
-
-## 📝 NOTES FOR NEXT SESSION
-
-- Database connection: already closed properly in 04-viz.ipynb
-- All display names consistently applied (DISPLAY_NAMES dict)
-- Small multiples (Charts 4, 5) are exploratory—good for pattern spotting, not for social viz
-- Consider creating standalone "shock" charts for:
-  1. Suicide sex comparison (focused chart)
-  2. Alzheimer's sex + age pattern
-  3. Individual accident types (if data available)
-  4. Homicide by age (if feasible)
-
----
-
-**Questions for next session start:**
-- Should we attempt to find perpetrator race data (NVDRS/UCR) or accept limitation?
-- What's the effort to query WONDER for accident sub-types?
-- How deep should we go on "unique cause" analysis (all 52 causes or top 20)?
+- Python: `/opt/anaconda3/envs/data_projects/bin/python` (3.13)
+- DuckDB: `data/project.duckdb`
+- GitHub: `unwelcomedata/abortion-cause-of-death` (private, main branch, clean)
