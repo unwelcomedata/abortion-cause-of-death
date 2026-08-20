@@ -305,12 +305,21 @@ def save_social(
 
     # Resize to exact platform dimensions + add watermark
     img = Image.open(out_path)
-    img = img.resize((w_px, h_px), Image.LANCZOS)
+
+    # Resize slightly smaller than target to leave margin, then center
+    margin_lr = 24  # left/right margin in final pixels
+    inner_w = w_px - (margin_lr * 2)
+    inner_h = h_px
+    img = img.resize((inner_w, inner_h), Image.LANCZOS)
+
+    # Place on white canvas with margins
+    canvas = Image.new("RGB", (w_px, h_px), (255, 255, 255))
+    canvas.paste(img, (margin_lr, 0))
 
     if add_watermark:
-        img = _draw_watermark(img, add_watermark)
+        canvas = _draw_watermark(canvas, add_watermark)
 
-    img.save(out_path, format="PNG", optimize=True)
+    canvas.save(out_path, format="PNG", optimize=True)
     print(f"Saved social chart -> {out_path}  ({w_px}x{h_px} px, preset={preset})")
     return out_path
 
@@ -346,7 +355,7 @@ def _add_source(chart: alt.Chart, source: str, width: int) -> alt.Chart:
 
 
 def _draw_watermark(img: Image.Image, text: str) -> Image.Image:
-    """Draw watermark text on bottom-right of image."""
+    """Draw watermark text aligned to the chart content's right edge."""
     draw = ImageDraw.Draw(img)
 
     try:
@@ -358,9 +367,23 @@ def _draw_watermark(img: Image.Image, text: str) -> Image.Image:
     text_w = bbox[2] - bbox[0]
     text_h = bbox[3] - bbox[1]
 
-    # Position: bottom-right corner of the image
-    x = img.width - text_w - 20
-    y = img.height - text_h - 20
+    # Find the rightmost non-white pixel in the chart area (above footer)
+    # Sample the middle vertical band to find content right edge
+    content_right = img.width - 20  # fallback
+    for x in range(img.width - 1, 0, -1):
+        found = False
+        for y in range(50, img.height - 80):
+            r, g, b = img.getpixel((x, y))[:3]
+            if (r, g, b) != (255, 255, 255):
+                found = True
+                break
+        if found:
+            content_right = x
+            break
+
+    # Position: bottom of image, right-aligned to content edge
+    x = content_right - text_w
+    y = img.height - text_h - 16
 
     draw.text((x, y), text, fill=(156, 163, 175, 180), font=font)
     return img
