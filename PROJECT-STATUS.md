@@ -1,75 +1,80 @@
 # abortion-cause-of-death — Project Status
 
-**Last updated:** 2026-08-19
-**Status:** IN PROGRESS — Trend line chart updated to rates. Next: bar chart race + historical data.
+**Last updated:** 2026-08-20  
+**Status:** IN PROGRESS — Pillow renderer built, refinements needed
 
 ---
 
-## Current Phase: Exploratory Viz Iteration (04-viz.ipynb)
+## Current Phase: Viz Engine Migration (Altair → Pillow)
 
-### Recent Work (This Session)
+### What's Done
+- Pillow-based chart renderer built in `shared/chart_templates.py` (side_by_side_bars, stacked_horizontal_bar, single_ranked_bars, detail_bar)
+- `shared/chart_factory.py` rewritten — same `render_chart(config)` interface, routes to Pillow templates
+- `src/viz_social.py` simplified to thin compatibility layer (no Altair/vl-convert)
+- Inter font installed and loading correctly (Bold + Regular)
+- Font metrics using `getmetrics()` for proper vertical centering
+- All 5 charts render at 1600×900 without errors
+- Stacked bar charts (2, 3, 4) look good
+- Title rendered in Inter Bold, subtitle in Inter Regular, footer with source + watermark
 
-- **Trend line chart overhauled** in `04-viz.ipynb`:
-  - Changed from static top-5-by-cumulative to **dynamic top-5-per-year** ranking
-  - Switched from raw death counts to **crude rate per 100,000 population**
-  - Lines break when a cause drops out of the top 5 for that year (contiguous segments)
-  - Abortion rate computed using same total population denominator for comparability
-  - Key finding: on a rate basis, abortion (~330/100k in 2024) would rank **#1**, above heart disease (201/100k)
-  - Output: `outputs/trend_top5_rate_plus_abortion.png`
+### What Needs Fixing (Priority)
 
-- **Investigated extending data pre-1999:**
-  - Current mortality data is ICD-10 (1999-2024 via WONDER)
-  - Pre-1999 requires ICD-9 Compressed Mortality File (1979-1998)
-  - CDC WONDER query interface kept timing out — revisit later
-  - Top 5 causes are broadly stable across ICD revisions (heart, cancer, stroke, accidents, respiratory)
-  - Abortion peaked ~430/100k in early 1980s, roughly crossing heart disease rate at that time
+1. **Side-by-side bar alignment issues:**
+   - Bars across left and right panels are vertically misaligned (bars at the same rank should sit on the same horizontal line)
+   - Root cause: each panel computes `bars_y_start` independently after drawing its panel title. Need to synchronize the y-start across both panels.
+   - Scale accuracy: both panels now share `bar_area_width` and `x_max`, but verify visually that a value like 28.5 in the right panel produces a longer bar than 26.8 in the left panel.
 
----
+2. **Detail bar width:**
+   - Currently computed from bar_area_left to bar_area_right — this is fragile and varies between charts
+   - Consider: set a fixed detail bar width (e.g., 80% of total_chart_width) or anchor it to a simpler reference
+   - The detail bar should feel like it belongs to the chart, not extend past where bars end
 
-## Social Charts (04b-viz-social.ipynb) — COMPLETE
+3. **Notebook cleanup (04b-viz-social.ipynb):**
+   - Markdown header still says "Altair + vl-convert" — update to reflect Pillow
+   - Remove any old Altair-specific cells/comments
+   - Verify all cells run cleanly with the new pipeline
 
-1. **Chart 1: Female vs Male top 10 (per 100k)** — DONE
-2. **Chart 1b: White vs Black top 10 (per 100k)** — DONE
-3. **Chart 2: National Abortion Comparison** — DONE
-4. **Charts 3 & 4: Abortion by Race (White & Black)** — DONE
+### What Needs Doing (Next Session)
 
----
-
-## Next Steps (If Reopening)
-
-### Priority: Bar Chart Race
-
-- [ ] Build a **bar chart race** (animated ranking chart) showing top causes of death + abortion over time
-- [ ] Need a reusable bar chart race template (consider `bar_chart_race` Python package or custom matplotlib animation)
-- [ ] Data: combine 1999-2024 ICD-10 rates + abortion rates from Guttmacher
-- [ ] If extending to 1973+: pull ICD-9 data from CDC Compressed Mortality (1979-1998) when WONDER cooperates
-- [ ] Guttmacher abortion data available 1973-2024 — rate peaks ~430/100k around 1980-81
-
-### Historical Data Pull
-
-- [ ] CDC WONDER Compressed Mortality 1979-1998 (ICD-9): http://wonder.cdc.gov/cmf-icd9.html
-  - Query: national level, all ages, all races, by year, top cause categories
-  - Was timing out during this session — try again later or use CDC Health United States Table 005 (PDF/Excel with selected years back to 1950)
-- [ ] Stitch pre-1999 and post-1999 data with note about ICD-9→10 boundary
-
-### Other Ideas
-
-- [ ] Social posting plan (copy, alt text, thread strategy)
-- [ ] Additional charts: Alzheimer's disparity, diabetes/kidney cluster, accidents by sex x race
+1. Fix side-by-side vertical alignment (synchronize bars_y_start between panels)
+2. Fix detail bar width (use a fixed proportion or anchor to right panel bar end)
+3. Clean up `project-template/` for new viz rendering process
+4. Go through all notebooks — remove outdated code/cells, update comments/headings
+5. Make processes reproducible (confirm `04b-viz-social.ipynb` runs top-to-bottom)
 
 ---
 
-## Key Design Decisions
+## Architecture (Current)
 
-- **Per-capita rates** for trend comparisons (controls for 22% population growth 1999-2024)
-- **Crude rate per 100k** (not age-adjusted) for the trend chart — matches WONDER output directly
-- **Dynamic ranking per year** — shows COVID-19 entering/leaving top 5 naturally
-- **Abortion uses total population denominator** for comparability with all-cause mortality rates
+```
+Notebook cell: render_chart({config dict})
+    ↓
+shared/chart_factory.py: routes type → builder, loads DuckDB data
+    ↓
+shared/chart_templates.py: Pillow drawing (all chart types)
+    ↓
+PIL.Image → saved to outputs/social/*.png
+```
+
+No Altair, no vl-convert, no browser dependency. Pure Pillow.
+
+### Key Files
+- `shared/chart_factory.py` — entry point, data loading, routing, PNG export
+- `shared/chart_templates.py` — all Pillow drawing logic
+- `shared/viz.py` — brand palette, PRESETS, SOCIAL_THEME (unchanged)
+- `src/viz_social.py` — thin save_social() wrapper (barely needed now)
+- `notebooks/04b-viz-social.ipynb` — the notebook (config cells unchanged)
+
+### DuckDB Tables (chart data)
+chart_female_top10, chart_male_top10, chart_male_suicide_age,
+chart_white_top10, chart_black_top10, chart_white_suicide_age,
+chart_black_homicide_offender, chart_national_stacked, chart_stacked_white,
+chart_stacked_black, chart_abortion_gestation, chart_annotations
 
 ---
 
 ## Environment
-
-- Python: `/opt/anaconda3/envs/data_projects/bin/python` (3.13)
+- Python: `/opt/anaconda3/envs/data_projects/bin/python` (3.13.5)
+- Font: Inter Bold + Regular installed at `~/Library/Fonts/`
 - DuckDB: `data/project.duckdb`
 - GitHub: `unwelcomedata/abortion-cause-of-death` (private, main branch)
