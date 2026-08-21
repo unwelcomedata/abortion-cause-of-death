@@ -1,11 +1,11 @@
 # abortion-cause-of-death — Project Status
 
-**Last updated:** 2026-08-20  
-**Status:** IN PROGRESS — Pillow renderer built, refinements needed
+**Last updated:** 2026-08-21  
+**Status:** IN PROGRESS — Pillow renderer working, charts aligned, notebooks clean
 
 ---
 
-## Current Phase: Viz Engine Migration (Altair → Pillow)
+## Current Phase: Viz Engine Complete — Ready for Final Polish
 
 ### What's Done
 - Pillow-based chart renderer built in `shared/chart_templates.py` (side_by_side_bars, stacked_horizontal_bar, single_ranked_bars, detail_bar)
@@ -14,33 +14,29 @@
 - Inter font installed and loading correctly (Bold + Regular)
 - Font metrics using `getmetrics()` for proper vertical centering
 - All 5 charts render at 1600×900 without errors
+- **Side-by-side bar alignment FIXED** — bars_y_start synchronized across panels via forced_bars_y_start
+- **Detail bar width FIXED** — uses full content width (margin-to-margin) for stable sizing
 - Stacked bar charts (2, 3, 4) look good
-- Title rendered in Inter Bold, subtitle in Inter Regular, footer with source + watermark
+- Notebooks cleaned: Altair references removed, 04b header updated, outputs cleared
+- 04b-viz-social.ipynb confirmed to run top-to-bottom cleanly
 
-### What Needs Fixing (Priority)
+### What Needs Fixing (Lower Priority)
 
-1. **Side-by-side bar alignment issues:**
-   - Bars across left and right panels are vertically misaligned (bars at the same rank should sit on the same horizontal line)
-   - Root cause: each panel computes `bars_y_start` independently after drawing its panel title. Need to synchronize the y-start across both panels.
-   - Scale accuracy: both panels now share `bar_area_width` and `x_max`, but verify visually that a value like 28.5 in the right panel produces a longer bar than 26.8 in the left panel.
+1. **Narrow segment label clipping:**
+   - In the gestational age detail bar, the rightmost segment ("≥21 wks (1%)") clips at the image edge
+   - Fix: skip label if segment width < label width, or shift label left
 
-2. **Detail bar width:**
-   - Currently computed from bar_area_left to bar_area_right — this is fragile and varies between charts
-   - Consider: set a fixed detail bar width (e.g., 80% of total_chart_width) or anchor it to a simpler reference
-   - The detail bar should feel like it belongs to the chart, not extend past where bars end
-
-3. **Notebook cleanup (04b-viz-social.ipynb):**
-   - Markdown header still says "Altair + vl-convert" — update to reflect Pillow
-   - Remove any old Altair-specific cells/comments
-   - Verify all cells run cleanly with the new pipeline
+2. **Leftover files in outputs/social/:**
+   - `01_top10_causes_female_vs_male_detail.png` (old composite approach)
+   - `template_top10_by_sex.png` (dev template)
+   - Can be deleted when ready to ship
 
 ### What Needs Doing (Next Session)
 
-1. Fix side-by-side vertical alignment (synchronize bars_y_start between panels)
-2. Fix detail bar width (use a fixed proportion or anchor to right panel bar end)
-3. Clean up `project-template/` for new viz rendering process
-4. Go through all notebooks — remove outdated code/cells, update comments/headings
-5. Make processes reproducible (confirm `04b-viz-social.ipynb` runs top-to-bottom)
+1. Clean up `project-template/` for new Pillow viz process (remove Altair workflow references)
+2. Go through notebooks 01–03 — verify top-to-bottom reproducibility
+3. Final chart review: decide if narrow segment label issue is worth fixing before posting
+4. Write social-posts.md (posting plan, copy, alt text)
 
 ---
 
