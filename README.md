@@ -9,6 +9,25 @@
 
 ---
 
+## What This Is
+
+A mortality comparison showing how abortion would rank against leading
+causes of death in the United States, using CDC WONDER 2024 mortality data
+and Guttmacher Institute 2024 abortion estimates.
+
+**Key outputs:**
+- 6 publication-ready social charts (side-by-side bars, stacked bars, per-capita comparison)
+- Exportable dataset (CSV, Excel, Parquet) with 63 rows across 3 comparison categories
+- Full DuckDB analytical database with 32 tables
+
+**Key findings:**
+- At 1.12 million per year, abortion would rank between #1 (heart disease) and #2 (cancer) nationally
+- For Black Americans, abortion would rank #1 at 695 per 100k — above heart disease
+- For White Americans, abortion would rank #3 at 132 per 100k
+- 93% of abortions occur by 13 weeks gestation (CDC Surveillance 2022 estimate)
+
+---
+
 ## Data Sources
 
 All data sources are documented in [SOURCES.md](SOURCES.md) with full
@@ -27,124 +46,105 @@ SELECT * FROM _sources;
 
 ```
 abortion-cause-of-death/
-├── config.yaml              ← sources, paths, export settings — edit this first
+├── config.yaml              ← sources, paths, export settings
 ├── SOURCES.md               ← full data source attribution
+├── ANALYSIS-FINDINGS.md     ← statistical findings and methodology
 ├── requirements.txt
 ├── data/
 │   ├── raw/                 ← original downloaded files, never modified
-│   ├── interim/             ← cleaned Parquet files (1:1 match DuckDB table names)
-│   ├── processed/           ← analysis-ready Parquet files
-│   └── project.duckdb       ← single-file database for the project
-├── export/                  ← packaged datasets (CSV, Excel, Parquet + codebook)
-├── outputs/                 ← exploratory chart PNGs (from 04-viz)
-│   └── social/             ← publication-ready charts for posting (from 04b-viz-social)
-├── scripts/
-│   ├── README.md            ← pipeline run order and conventions
-│   ├── ingest_all.py        ← reproducible ingestion
-│   ├── clean_all.py         ← standardize raw tables
-│   └── prepare_export.py    ← build final export
+│   ├── interim/             ← cleaned Parquet files
+│   └── project.duckdb       ← single-file database (32 tables)
+├── export/                  ← packaged datasets (CSV, Excel, Parquet)
+├── outputs/
+│   └── social/              ← 6 publication-ready chart PNGs
+├── shared/                  ← (workspace-level) chart_factory + chart_templates
 ├── notebooks/
-│   ├── 00-explore.ipynb     ← DuckDB query sandbox
 │   ├── 01-ingest.ipynb      ← fetch sources → data/raw/ → DuckDB
 │   ├── 02-clean.ipynb       ← clean + quality checks → data/interim/
-│   ├── 03-prepare.ipynb     ← feature engineering + export packaging
-│   ├── 04-viz.ipynb         ← exploratory charts → outputs/
-│   ├── 04b-viz-social.ipynb ← publication social charts → outputs/social/
-│   └── 05-analysis.ipynb    ← statistical analysis + findings
+│   ├── 03-prepare.ipynb     ← export packaging (with/without abortion comparison)
+│   ├── 04-viz.ipynb         ← exploratory charts (matplotlib)
+│   ├── 04b-viz-social.ipynb ← publication social charts (Pillow pipeline)
+│   └── 05-analysis.ipynb    ← statistical analysis
 └── src/
     ├── ingest.py            ← fetch helpers (caching, rate limiting)
     ├── clean_quality.py     ← DuckDB cleaning + quality reports + _sources
     ├── prepare.py           ← PII stripping, codebook, packaging
     ├── viz.py               ← matplotlib chart builders (exploratory)
-    └── viz_social.py        ← Altair + vl-convert social export
+    └── viz_social.py        ← thin wrapper for shared Pillow pipeline
 ```
 
 ---
 
-## Workflow
+## Chart Pipeline
 
-### 1. Configure `config.yaml`
+All publication charts are rendered via the shared workspace-level Pillow pipeline:
 
-Add each data source under the `sources:` block before ingesting:
-
-```yaml
-sources:
-  my_source:
-    url: https://example.gov/data/table
-    type: html_table      # html_table | html_scrape | csv | json
-    table_index: 0
-    js_render: false
+```
+shared/chart_factory.py  → routes config dict to appropriate builder
+shared/chart_templates.py → pure Pillow drawing (no browser dependency)
 ```
 
-### 2. Document sources in `SOURCES.md`
+Charts render deterministically from DuckDB-stored
+data tables prefixed with `chart_`.
 
-Before ingesting any data, add an entry to `SOURCES.md` for each source:
-- Full URL
-- Publisher / agency
-- License
-- Fields used
-- Any caveats
+**Publication charts (6):**
+1. Top 10 causes: Female vs Male (side-by-side bars)
+2. Top 10 causes: White vs Black (side-by-side bars + detail bars)
+3. National abortion comparison (stacked bars + gestation inner segments)
+3b. White Americans (stacked bars) — supplemental
+3c. Black Americans (stacked bars) — supplemental
+4. Per-capita: White vs Black (side-by-side bars, shared scale)
 
-### 3. Ingest (`01-ingest.ipynb`)
+---
 
-```python
-from src.ingest import load_config, ingest_source
-cfg = load_config("config.yaml")
-df = ingest_source("my_source", cfg)
+## Reproducibility
+
+The full pipeline runs top-to-bottom:
+
+```bash
+# From project root, using the data_projects conda environment:
+jupyter nbconvert --execute notebooks/01-ingest.ipynb
+jupyter nbconvert --execute notebooks/02-clean.ipynb
+jupyter nbconvert --execute notebooks/03-prepare.ipynb
+jupyter nbconvert --execute notebooks/04b-viz-social.ipynb
 ```
 
-Raw files land in `data/raw/` untouched. All tables load into DuckDB at
-`data/project.duckdb` with source metadata written to `_sources`.
+All intermediate data is regenerated from raw files. Export files and charts
+are deterministic given the same raw inputs.
 
-### 4. Clean (`02-clean.ipynb`)
+---
 
-```python
-from src.clean_quality import get_connection, clean_table, quality_report, save_interim
-con = get_connection(cfg)
-df_clean = clean_table(df, "my_source_raw", con, cast_map={"year": "INTEGER"})
-quality_report(df_clean, "my_source_clean", con)
-save_interim(df_clean, cfg, "my_source_clean.parquet")
+## Export
+
+```
+export/
+├── abortion_cause_of_death_v1.csv       (63 rows × 14 columns)
+├── abortion_cause_of_death_v1.parquet
+└── abortion_cause_of_death_v1.xlsx      (3 sheets: National, Female, Female_15-44)
 ```
 
-### 5. Prepare & export (`03-prepare.ipynb`)
+Each row is a cause of death with columns for category (National/Female/Female 15-44),
+scenario (with/without abortion), deaths, population, crude rate, and gestation group.
 
-```python
-from src.prepare import package_dataset
-package_dataset(df, cfg, name="my_dataset_v1",
-                codebook={"col": "description"},
-                notes="Source: Agency. License: Public domain.")
-```
+---
 
-### 6. Visualize (`04-viz.ipynb` + `04b-viz-social.ipynb`)
+## Methodology Notes
 
-**04-viz** is for exploratory charting (matplotlib). Output goes to `outputs/`.
+- **Mortality data:** CDC WONDER 2024, ICD-10 113 Cause List, crude rates
+- **Abortion counts:** Guttmacher Institute 2024 (1,124,000 clinician-provided)
+- **Gestational age distribution:** CDC Abortion Surveillance 2022 (most recent
+  year with gestation detail; applied to 2024 total as an estimate)
+- **Rate formula:** `crude_rate = count / (population + abortions) × 100,000`
+- **Race proportions:** Guttmacher Abortion Patient Survey 2021-2022
+- Crude rates used (not age-adjusted) because age-specific abortion counts by
+  race don't exist at the necessary granularity
 
-```python
-from src.viz import ranked_bar_chart, save_chart
-fig = ranked_bar_chart(df, x="state", y="rate", title="Top 10 States", top_n=10,
-                       preset="instagram_portrait")
-save_chart(fig, cfg, "top10_states", preset="instagram_portrait",
-           add_watermark="@unwelcomedata")
-```
-
-**04b-viz-social** is for publication-ready charts (Altair + vl-convert).
-Output goes to `outputs/social/`. Only curated, validated charts go here.
-
-```python
-from src.viz_social import save_social
-save_social(chart, cfg, 'my_social_chart', preset='twitter_landscape')
-```
-
-### 7. Analyze (`05-analysis.ipynb`)
-
-Statistical analysis, regression, group comparisons. Always read from the
-**export** parquet (not raw DuckDB tables) to ensure consistency with
-published data.
+See [SOURCES.md](SOURCES.md) for full source documentation and
+[ANALYSIS-FINDINGS.md](ANALYSIS-FINDINGS.md) for statistical details.
 
 ---
 
 ## Anonymity
 
-Commits are authored as `unwelcomedata` to keep the author's real identity
-off the public commit history. Data files, exports, outputs, and `.env`
-secrets are excluded from version control via `.gitignore`.
+Commits are authored as `unwelcomedata`. Data files, exports, outputs, and
+`.env` secrets are excluded from version control via `.gitignore`.

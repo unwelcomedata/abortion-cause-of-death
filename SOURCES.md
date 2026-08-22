@@ -104,6 +104,10 @@ Zero values shown. Export format: tab-delimited with notes footer.
   - Gestational age data are based on reports from clinicians where gestational
     age was known. This reflects clinical practice of measuring gestational age
     at time of abortion.
+  - **Important:** The 2022 gestational age distribution is an **estimate** when
+    applied to 2024 abortion totals. No 2024 gestational data exists yet. The
+    assumption of stability is supported by historical surveillance showing
+    <1pp/year change in gestational composition (2015–2022).
   - CDC undercounts vs Guttmacher because 4 states don't report; proportions
     are still valid for distributing across age groups and gestational weeks.
 - **Retrieved:** 2025-08-17
