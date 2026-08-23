@@ -64,5 +64,5 @@ env/
 tmp/
 temp/
 
-# ── Social media planning (local only) ────────────────────────────────────────
-social-posts.md
+# ── Artifacts (dev-only docs, not committed) ──────────────────────────────────
+artifacts/
