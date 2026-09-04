@@ -30,11 +30,13 @@ export/*
 
 # ── Output images ─────────────────────────────────────────────────────────────
 # Social chart PNGs can reveal your data before you're ready to publish.
-outputs/*
-!outputs/.gitkeep
-!outputs/social/
-outputs/social/*
-!outputs/social/.gitkeep
+outputs/
+
+# ── Release branch: publish curated charts + dataset (force-added) ───────────
+# docs/ holds the published chart PNGs; export CSV+codebook are the public dataset.
+# Intentionally tracked on the release branch only.
+!docs/
+notebooks/
 
 # ── Environment & secrets ─────────────────────────────────────────────────────
 .env

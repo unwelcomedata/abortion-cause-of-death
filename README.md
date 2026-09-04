@@ -1,150 +1,153 @@
-# abortion-cause-of-death
+**[@unwelcomedata](https://unwelcomedata.github.io/abortion-cause-of-death/)** · data from public sources
 
-> **AI-Assisted Development**
-> This project was built with the assistance of [Kiro](https://kiro.dev),
-> an AI-powered development environment. All data sourcing decisions,
-> methodology choices, and published findings are the responsibility of the
-> author. AI was used for code generation, data pipeline construction, and
-> research assistance — not for analysis conclusions or editorial judgment.
+# If abortion were counted as a cause of death, where would it rank?
 
----
+A mortality comparison for the United States, 2024: the officially recorded
+leading causes of death, and where the year's abortion total would fall **if it
+were counted as a cause of death**.
 
-## What This Is
+**Up front about the framing.** This is a deliberate, contested comparison.
+Abortions are not recorded on death certificates and are not in the mortality
+data's universe — so the "with abortion" ranking is *constructed*, not drawn from
+a single source. The point isn't to smuggle in a definition; it's to put a number
+most people never see on the same axis as the causes of death they do. What you
+conclude from that is yours. The construction, the denominator choice, and every
+source are documented openly below and in [SOURCES.md](SOURCES.md).
 
-A mortality comparison showing how abortion would rank against leading
-causes of death in the United States, using CDC WONDER 2024 mortality data
-and Guttmacher Institute 2024 abortion estimates.
-
-**Key outputs:**
-- 6 publication-ready social charts (side-by-side bars, stacked bars, per-capita comparison)
-- Exportable dataset (CSV, Excel, Parquet) with 63 rows across 3 comparison categories
-- Full DuckDB analytical database with 32 tables
-
-**Key findings:**
-- At 1.12 million per year, abortion would rank between #1 (heart disease) and #2 (cancer) nationally
-- For Black Americans, abortion would rank #1 at 695 per 100k — above heart disease
-- For White Americans, abortion would rank #3 at 132 per 100k
-- 93% of abortions occur by 13 weeks gestation (CDC Surveillance 2022 estimate)
+**The headline:** at roughly 1.12 million for 2024 (Guttmacher's estimate),
+inserting abortion into the national leading-causes list places it near the very
+top — in the neighborhood of heart disease and cancer, the two largest recorded
+causes.
 
 ---
 
-## Data Sources
+## The charts
 
-All data sources are documented in [SOURCES.md](SOURCES.md) with full
-attribution, URLs, licenses, and retrieval notes.
+**What if abortion were counted as a cause of death?** The national top causes,
+with the abortion total inserted and the list re-ranked.
 
-Source provenance is also recorded inside the project database:
+![What if abortion were counted as a cause of death — national](docs/03_national.png)
 
-```sql
--- Open data/project.duckdb and run:
-SELECT * FROM _sources;
-```
+**Top 10 causes of death: Female vs Male.** The recorded leading causes, by sex,
+for context on the population the abortion figure sits against.
 
----
+![Top 10 causes of death, female vs male](docs/01_female_vs_male.png)
 
-## Project Structure
+**Top 10 causes of death: White vs Black.** Recorded leading causes by race.
 
-```
-abortion-cause-of-death/
-├── config.yaml              ← sources, paths, export settings
-├── SOURCES.md               ← full data source attribution
-├── ANALYSIS-FINDINGS.md     ← statistical findings and methodology
-├── requirements.txt
-├── data/
-│   ├── raw/                 ← original downloaded files, never modified
-│   ├── interim/             ← cleaned Parquet files
-│   └── project.duckdb       ← single-file database (32 tables)
-├── export/                  ← packaged datasets (CSV, Excel, Parquet)
-├── outputs/
-│   └── social/              ← 6 publication-ready chart PNGs
-├── shared/                  ← (workspace-level) chart_factory + chart_templates
-├── notebooks/
-│   ├── 01-ingest.ipynb      ← fetch sources → data/raw/ → DuckDB
-│   ├── 02-clean.ipynb       ← clean + quality checks → data/interim/
-│   ├── 03-prepare.ipynb     ← export packaging (with/without abortion comparison)
-│   ├── 04-viz.ipynb         ← exploratory charts (matplotlib)
-│   ├── 04b-viz-social.ipynb ← publication social charts (Pillow pipeline)
-│   └── 05-analysis.ipynb    ← statistical analysis
-└── src/
-    ├── ingest.py            ← fetch helpers (caching, rate limiting)
-    ├── clean_quality.py     ← DuckDB cleaning + quality reports + _sources
-    ├── prepare.py           ← PII stripping, codebook, packaging
-    ├── viz.py               ← matplotlib chart builders (exploratory)
-    └── viz_social.py        ← thin wrapper for shared Pillow pipeline
-```
+![Top 10 causes of death, White vs Black](docs/02_white_vs_black.png)
+
+**The same comparison, within groups.** The "what if abortion were counted"
+ranking computed among White Americans and among Black Americans.
+
+![Top 5 causes with abortion — White Americans](docs/03b_white.png)
+
+![Top 5 causes with abortion — Black Americans](docs/03c_black.png)
+
+**Per-capita: White vs Black.** Abortion as a rate per 100,000, on a shared scale.
+
+![Abortion as a cause of death, per capita — White vs Black](docs/04_percapita_white_vs_black.png)
+
+> **Additional charts are available in the repo.** The [`docs/`](docs/) folder
+> also includes White-vs-Hispanic, Black-vs-Hispanic, and three-way
+> comparisons, plus the matching per-capita views — browse them in the repository
+> even though they aren't all shown on this page.
 
 ---
 
-## Chart Pipeline
+## How it was measured
 
-All publication charts are rendered via the shared workspace-level Pillow pipeline:
+Three sources are combined:
 
-```
-shared/chart_factory.py  → routes config dict to appropriate builder
-shared/chart_templates.py → pure Pillow drawing (no browser dependency)
-```
+- **Recorded deaths and population** — CDC WONDER 2024 (Underlying Cause of Death,
+  Expanded), the standard federal mortality tabulation. Every death certificate
+  gets one underlying cause; population denominators are Census estimates matched
+  to the year.
+- **The abortion total** — Guttmacher Institute's 2024 estimate (~1.12 million
+  clinician-provided abortions).
+- **Age & gestational-age shape** — CDC Abortion Surveillance 2022 distributions,
+  the most recent with that detail, applied to the 2024 total.
 
-Charts render deterministically from DuckDB-stored
-data tables prefixed with `chart_`.
+**The denominator choice, stated plainly.** For the "with abortion" rates, the
+denominator is `population + abortions`, so aborted lives are counted in the base
+— consistent with how a crude death rate treats people who died. That's a modeling
+choice; it's spelled out in [SOURCES.md](SOURCES.md) → Methodology Notes so you can
+disagree with it explicitly.
 
-**Publication charts (6):**
-1. Top 10 causes: Female vs Male (side-by-side bars)
-2. Top 10 causes: White vs Black (side-by-side bars + detail bars)
-3. National abortion comparison (stacked bars + gestation inner segments)
-3b. White Americans (stacked bars) — supplemental
-3c. Black Americans (stacked bars) — supplemental
-4. Per-capita: White vs Black (side-by-side bars, shared scale)
+**Caveats that materially affect interpretation:**
+
+- The Guttmacher figure is a **model estimate (MAPS), not a census**, and it
+  *excludes* self-managed abortions and abortions in total-ban states — so it is an
+  **undercount** of all abortions occurring. It's also a different instrument from
+  Guttmacher's older Abortion Provider Census (a method break at 2023): a
+  "2020 vs 2024" comparison mixes a census with a model.
+- **Gestational-age and age distributions are 2022**, applied to 2024 on the
+  assumption they move slowly (historically under a percentage point per year).
+- Race counts use CDC's **single-race coding, which only runs 2018 forward** — do
+  not splice onto older bridged-race series.
+
+Per-source collection methods, definitions, series breaks, and known controversies
+are all in [SOURCES.md](SOURCES.md).
 
 ---
 
-## Reproducibility
+## The data
 
-The full pipeline runs top-to-bottom:
+The published dataset is in [`export/`](export/):
+
+- `abortion_cause_of_death_v1.csv` — 63 rows across three populations (National,
+  Female, Female 15-44) under both scenarios (with / without abortion), × 14
+  columns.
+- `abortion_cause_of_death_v1_codebook.md` — a plain-English description of every
+  column.
+
+The richer packaging (Excel, Parquet) and the full pipeline code are in the repo.
+
+---
+
+## Reproduce it
+
+**This one is not a one-command rebuild, and it shouldn't pretend to be.** Two of
+the three sources are manual downloads — CDC WONDER is an interactive query tool
+with no bulk API, and the Guttmacher total comes from a published fact sheet. Once
+those raw files are in place (exact queries and filenames are in
+[SOURCES.md](SOURCES.md)), the ingest → clean → prepare pipeline builds the DuckDB
+tables and the export is rebuilt with:
 
 ```bash
-# From project root, using the data_projects conda environment:
-jupyter nbconvert --execute notebooks/01-ingest.ipynb
-jupyter nbconvert --execute notebooks/02-clean.ipynb
-jupyter nbconvert --execute notebooks/03-prepare.ipynb
-jupyter nbconvert --execute notebooks/04b-viz-social.ipynb
+python scripts/generate_export.py    # DuckDB tables → export/ (CSV)
 ```
 
-All intermediate data is regenerated from raw files. Export files and charts
-are deterministic given the same raw inputs.
+The honest run order — including the manual steps — is in
+[`scripts/README.md`](scripts/README.md), and the reusable logic is in
+[`src/`](src/).
 
 ---
 
-## Export
+## Sources & license
 
-```
-export/
-├── abortion_cause_of_death_v1.csv       (63 rows × 14 columns)
-├── abortion_cause_of_death_v1.parquet
-└── abortion_cause_of_death_v1.xlsx      (3 sheets: National, Female, Female_15-44)
-```
-
-Each row is a cause of death with columns for category (National/Female/Female 15-44),
-scenario (with/without abortion), deaths, population, crude rate, and gestation group.
+Full attribution — publisher, URL, collection method, definitions, series breaks,
+and known controversies — is in [SOURCES.md](SOURCES.md). In short: CDC WONDER
+2024 and CDC Abortion Surveillance 2022 (public domain, U.S. government), and the
+Guttmacher Institute 2024 estimate (published research, cited for analysis). No
+crowd-edited sources are used.
 
 ---
 
-## Methodology Notes
+## Further exploration
 
-- **Mortality data:** CDC WONDER 2024, ICD-10 113 Cause List, crude rates
-- **Abortion counts:** Guttmacher Institute 2024 (1,124,000 clinician-provided)
-- **Gestational age distribution:** CDC Abortion Surveillance 2022 (most recent
-  year with gestation detail; applied to 2024 total as an estimate)
-- **Rate formula:** `crude_rate = count / (population + abortions) × 100,000`
-- **Race proportions:** Guttmacher Abortion Patient Survey 2021-2022
-- Crude rates used (not age-adjusted) because age-specific abortion counts by
-  race don't exist at the necessary granularity
-
-See [SOURCES.md](SOURCES.md) for full source documentation and
-[ANALYSIS-FINDINGS.md](ANALYSIS-FINDINGS.md) for statistical details.
+- A time series across 2018–2024 (staying within the single-race break) rather
+  than a single year.
+- Sensitivity of the ranking to the denominator choice (population vs
+  population + abortions).
+- An explicit self-managed-abortion adjustment band around the Guttmacher
+  undercount.
 
 ---
 
-## Anonymity
-
-Commits are authored as `unwelcomedata`. Data files, exports, outputs, and
-`.env` secrets are excluded from version control via `.gitignore`.
+> **AI-Assisted Development**
+> This project was built with the assistance of [Kiro](https://kiro.dev), an
+> AI-powered development environment. All data-sourcing decisions, methodology
+> choices, and published findings are the responsibility of the author. AI was
+> used for code generation, data-pipeline construction, and research assistance —
+> not for analysis conclusions or editorial judgment.
