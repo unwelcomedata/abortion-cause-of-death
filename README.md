@@ -14,11 +14,6 @@ most people never see on the same axis as the causes of death they do. What you
 conclude from that is yours. The construction, the denominator choice, and every
 source are documented openly below and in [SOURCES.md](SOURCES.md).
 
-**The headline:** at roughly 1.12 million for 2024 (Guttmacher's estimate),
-inserting abortion into the national leading-causes list places it near the very
-top — in the neighborhood of heart disease and cancer, the two largest recorded
-causes.
-
 ---
 
 ## The charts
