@@ -21,9 +21,9 @@ and Guttmacher Institute 2024 abortion estimates.
 - Full DuckDB analytical database with 32 tables
 
 **Key findings:**
-- At 1.12 million per year, abortion would rank between #1 (heart disease) and #2 (cancer) nationally
-- For Black Americans, abortion would rank #1 at 695 per 100k — above heart disease
-- For White Americans, abortion would rank #3 at 132 per 100k
+- At 1.12 million per year, abortion would rank #1 nationally — exceeding every recorded cause of death, and approaching heart disease and cancer combined
+- For Black Americans, abortion would rank #1 at 753.2 per 100k — above heart disease
+- For White Americans, abortion would rank #3 at 172.2 per 100k
 - 93% of abortions occur by 13 weeks gestation (CDC Surveillance 2022 estimate)
 
 ---
