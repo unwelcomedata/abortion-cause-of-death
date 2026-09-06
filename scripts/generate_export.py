@@ -19,16 +19,25 @@ con = duckdb.connect(cfg['settings']['duckdb_file'])
 
 # Load data
 print("Loading data from DuckDB...")
-mort_national = con.execute('SELECT * FROM mortality_national ORDER BY deaths DESC').df()
 df_abortions = con.execute('SELECT * FROM abortions').df()
 
-# Extract abortion totals
+# Extract abortion totals.
+#   national_total  — all clinician-provided abortions (used for the National and
+#                     Female categories, whose mortality baselines are all-ages).
+#   repro_age_total — abortions to women 15-44 (used for the Female 15-44 category,
+#                     so the abortion count matches that category's age universe).
 abortion_national = df_abortions[df_abortions['measure'] == 'national_total']['value'].iloc[0]
+abortion_repro = df_abortions[df_abortions['measure'] == 'repro_age_total']['value'].iloc[0]
 
-print(f"Abortion totals: National {abortion_national:,.0f}")
+print(f"Abortion totals: National {abortion_national:,.0f} | Repro-age (15-44) {abortion_repro:,.0f}")
 
-# Add adjusted population columns
-mort_national['population_adjusted'] = mort_national['population'] + abortion_national
+# Each published category pairs a mortality baseline table with the abortion total
+# that matches its population universe. (category label, source table, abortion total)
+CATEGORIES = [
+    ('National',     'mortality_national',     abortion_national),
+    ('Female',       'mortality_female',       abortion_national),
+    ('Female 15-44', 'mortality_female_repro', abortion_repro),
+]
 
 # Display name mapping
 display_map = {
@@ -93,17 +102,21 @@ def build_with(df_without, abortion_total, category):
     
     return combined
 
-# Build tables
-print("Building WITHOUT tables...")
-without_national = prepare_without(mort_national, 'National')
-
-print("Building WITH tables...")
-with_national = build_with(without_national, abortion_national, 'National')
+# Build tables. The export is ordered scenario-major: all "Without abortion"
+# category blocks first, then all "With abortion" blocks.
+print("Building category tables (Without + With abortion)...")
+without_parts, with_parts = [], []
+for label, table, abortion_total in CATEGORIES:
+    mort = con.execute(f'SELECT * FROM {table} ORDER BY deaths DESC').df()
+    mort['population_adjusted'] = mort['population'] + abortion_total
+    without = prepare_without(mort, label)
+    without_parts.append(without)
+    with_parts.append(build_with(without, abortion_total, label))
+    print(f"  {label}: pop {mort['population'].iloc[0]:,.0f}, abortion {abortion_total:,.0f}")
 
 # Create master table
 print("Creating master export table...")
-master = pd.concat([without_national, with_national],
-                   ignore_index=True)
+master = pd.concat(without_parts + with_parts, ignore_index=True)
 
 master['year'] = 2024
 master['data_source'] = 'CDC WONDER 2024 + Guttmacher 2024'
@@ -131,7 +144,7 @@ print(f"✓ {parquet_file.name}")
 
 excel_file = export_dir / 'abortion_cause_of_death_v1.xlsx'
 with pd.ExcelWriter(excel_file, engine='openpyxl') as writer:
-    master.to_excel(writer, sheet_name='National', index=False)
+    master.to_excel(writer, sheet_name='data', index=False)
 print(f"✓ {excel_file.name}")
 
 print(f"\n✓ All files saved to: {export_dir}")
