@@ -36,7 +36,7 @@ python scripts/generate_export.py    # DuckDB tables → export/ (CSV + codebook
 
 | Script | Reads | Writes | Notes |
 |--------|-------|--------|-------|
-| `generate_export.py` | DuckDB tables `mortality_national`, `abortions` | `export/abortion_cause_of_death_v1.*` | Builds the "with / without abortion" ranking table and writes CSV (+ Excel/Parquet). The codebook (`*_codebook.md`) is maintained alongside the export. |
+| `generate_export.py` | DuckDB tables `mortality_national`, `mortality_female`, `mortality_female_repro`, `abortions` | `export/abortion_cause_of_death_v1.*` | Builds the "with / without abortion" ranking table for all three categories (National, Female, Female 15-44) and writes CSV (+ Excel/Parquet). Each category pairs its mortality baseline with the matching abortion total (national total for National/Female; reproductive-age 15-44 total for Female 15-44). The codebook (`*_codebook.md`) is maintained alongside the export. |
 
 ## Honesty note
 
