@@ -1,4 +1,4 @@
-**[@unwelcomedata](https://unwelcomedata.github.io/abortion-cause-of-death/)** · data from public sources
+**[@unwelcomedata](https://github.com/unwelcomedata)** · data from public sources
 
 # If abortion were counted as a cause of death, where would it rank?
 
