@@ -176,6 +176,34 @@ def main() -> int:
                 "no row with cause == 'Abortion' in the export",
             )
 
+    # ── Social vs web chart parity (only when rendered outputs are present) ──
+    # Each published chart must exist in BOTH the social set (outputs/social,
+    # for Bluesky/X) and the web set (outputs/web, for the project page), so a
+    # chart can never be published in one target without the other. The web
+    # charts must be the wider web canvas. Skipped cleanly on a fresh checkout
+    # where outputs/ (gitignored) hasn't been regenerated yet.
+    social_pngs = sorted((PROJECT / "outputs" / "social").glob("*.png"))
+    web_dir = PROJECT / "outputs" / "web"
+    if social_pngs and web_dir.exists():
+        social_names = {p.name for p in social_pngs}
+        web_names = {p.name for p in web_dir.glob("*.png")}
+        check(
+            "charts: social and web sets cover the same filenames",
+            social_names == web_names,
+            f"only social: {sorted(social_names - web_names)}; "
+            f"only web: {sorted(web_names - social_names)}",
+        )
+        try:
+            from PIL import Image
+            web_dims = {Image.open(p).size for p in web_dir.glob("*.png")}
+            check(
+                "charts: every web chart is the web canvas (1664x936)",
+                web_dims == {(1664, 936)},
+                f"unexpected web dimensions: {sorted(web_dims)}",
+            )
+        except ImportError:
+            pass  # Pillow not available for dimension check; skip silently.
+
     con.close()
 
     # ── Report ────────────────────────────────────────────────────────────
