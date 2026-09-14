@@ -1,0 +1,36 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+/* ------------------------------------------------------------------ *
+ * @unwelcomedata — shared Cayman overrides
+ *
+ * Standard tweak across every project page. Two goals:
+ *   1. Give charts more room to breathe. Stock Cayman caps the content
+ *      column at 64rem with 6rem side padding, leaving only ~832px of
+ *      usable width on desktop — our data charts get squeezed. We widen
+ *      the column and trim the side padding at the large breakpoint so
+ *      charts display closer to their rendered size and read without
+ *      zooming. Mobile/tablet breakpoints are left as the theme ships them.
+ *   2. Let a chart image act as a click-to-open link to the full-res PNG
+ *      without the default link underline/box getting in the way.
+ * ------------------------------------------------------------------ */
+
+@media screen and (min-width: 64em) {
+  .main-content {
+    max-width: 80rem;      /* was 64rem (~1024px) -> ~1280px */
+    padding: 2rem 4rem;    /* was 2rem 6rem -> reclaim 2rem each side */
+  }
+}
+
+/* Charts fill the content width and open full-res on click (see README:
+   each chart image is wrapped in a link to its own PNG). */
+.main-content img {
+  max-width: 100%;
+  height: auto;
+}
+.main-content a > img {
+  display: block;
+  margin: 0 auto;
+}

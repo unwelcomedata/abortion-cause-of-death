@@ -18,30 +18,32 @@ source are documented openly below and in [SOURCES.md](SOURCES.md).
 
 ## The charts
 
+_Click any chart to open it at full resolution._
+
 **What if abortion were counted as a cause of death?** The national top causes,
 with the abortion total inserted and the list re-ranked.
 
-![What if abortion were counted as a cause of death — national](docs/03_national.png)
+[![What if abortion were counted as a cause of death — national](docs/03_national.png)](docs/03_national.png)
 
 **Top 10 causes of death: Female vs Male.** The recorded leading causes, by sex,
 for context on the population the abortion figure sits against.
 
-![Top 10 causes of death, female vs male](docs/01_female_vs_male.png)
+[![Top 10 causes of death, female vs male](docs/01_female_vs_male.png)](docs/01_female_vs_male.png)
 
 **Top 10 causes of death: White vs Black.** Recorded leading causes by race.
 
-![Top 10 causes of death, White vs Black](docs/02_white_vs_black.png)
+[![Top 10 causes of death, White vs Black](docs/02_white_vs_black.png)](docs/02_white_vs_black.png)
 
 **The same comparison, within groups.** The "what if abortion were counted"
 ranking computed among White Americans and among Black Americans.
 
-![Top 5 causes with abortion — White Americans](docs/03b_white.png)
+[![Top 5 causes with abortion — White Americans](docs/03b_white.png)](docs/03b_white.png)
 
-![Top 5 causes with abortion — Black Americans](docs/03c_black.png)
+[![Top 5 causes with abortion — Black Americans](docs/03c_black.png)](docs/03c_black.png)
 
 **Per-capita: White vs Black.** Abortion as a rate per 100,000, on a shared scale.
 
-![Abortion as a cause of death, per capita — White vs Black](docs/04_percapita_white_vs_black.png)
+[![Abortion as a cause of death, per capita — White vs Black](docs/04_percapita_white_vs_black.png)](docs/04_percapita_white_vs_black.png)
 
 > **Additional charts are available in the repo.** The [`docs/`](docs/) folder
 > also includes White-vs-Hispanic, Black-vs-Hispanic, and three-way
