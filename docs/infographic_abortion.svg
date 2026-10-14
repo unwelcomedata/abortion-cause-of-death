@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  @unwelcomedata — PROJECT INFOGRAPHIC (tall portrait poster)
+  Project: abortion-cause-of-death
+  Bespoke, data-driven poster. Brand FRAME (header/footer/dividers) copied
+  verbatim from shared/infographic-frame-template.svg. Body hand-authored.
+  Canvas width fixed 1200; height grows to fit (final: 2140).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="2140" viewBox="0 0 1200 2140" font-family="Helvetica, Arial, sans-serif">
+
+  <!-- ===== CANVAS ===== -->
+  <rect width="1200" height="2140" fill="#FBF8F0"/>
+
+  <!-- ============================================================= -->
+  <!-- HEADER BAND                                                   -->
+  <!-- ============================================================= -->
+  <rect x="0" y="0" width="1200" height="300" fill="#003049"/>
+  <text x="80" y="130" fill="#FFFFFF" font-size="62" font-weight="bold">If Abortion Were a Cause of Death</text>
+  <text x="80" y="195" fill="#94D2BD" font-size="40" font-weight="bold">At 1.12 million a year, it would rank #1 in the United States</text>
+  <text x="80" y="245" fill="#E9D8A6" font-size="26">Comparing 2024 abortion estimates against the leading recorded causes of death.</text>
+
+  <!-- ============================================================= -->
+  <!-- SECTION 1 — THE NATIONAL HEADLINE                             -->
+  <!-- ============================================================= -->
+  <text x="80" y="390" fill="#003049" font-size="34" font-weight="bold">The national picture</text>
+  <text x="80" y="424" fill="#6B7280" font-size="24">Annual U.S. deaths by cause, with abortion added for comparison.</text>
+
+  <!-- big-number callout -->
+  <text x="80" y="520" fill="#9B2226" font-size="92" font-weight="bold">1,124,000</text>
+  <text x="80" y="560" fill="#6B7280" font-size="24">abortions in 2024 &#8212; more than any single recorded cause of death</text>
+  <text x="1120" y="500" fill="#003049" font-size="120" font-weight="bold" text-anchor="end">#1</text>
+  <text x="1120" y="545" fill="#6B7280" font-size="24" text-anchor="end">would-be rank, nationally</text>
+
+  <!-- proportional horizontal bars (track x370 -> x1190 is 820px at max value 1,124,000) -->
+  <!-- Abortion 1,124,000 -> 820.0 -->
+  <text x="350" y="648" fill="#003049" font-size="26" font-weight="bold" text-anchor="end">Abortion</text>
+  <rect x="370" y="625" width="820.0" height="36" fill="#9B2226"/>
+  <text x="1180" y="648" fill="#FFFFFF" font-size="22" font-weight="bold" text-anchor="end">1,124,000</text>
+
+  <!-- Heart disease 683,476 -> 498.6 -->
+  <text x="350" y="708" fill="#003049" font-size="26" font-weight="bold" text-anchor="end">Heart disease</text>
+  <rect x="370" y="685" width="498.6" height="36" fill="#005F73"/>
+  <text x="888.6" y="708" fill="#003049" font-size="22" font-weight="bold">683,476</text>
+
+  <!-- Cancer 619,871 -> 452.2 -->
+  <text x="350" y="768" fill="#003049" font-size="26" font-weight="bold" text-anchor="end">Cancer</text>
+  <rect x="370" y="745" width="452.2" height="36" fill="#0A9396"/>
+  <text x="842.2" y="768" fill="#003049" font-size="22" font-weight="bold">619,871</text>
+
+  <!-- Accidents 197,441 -> 144.1 -->
+  <text x="350" y="828" fill="#003049" font-size="26" font-weight="bold" text-anchor="end">Accidents</text>
+  <rect x="370" y="805" width="144.1" height="36" fill="#94D2BD"/>
+  <text x="534.1" y="828" fill="#003049" font-size="22" font-weight="bold">197,441</text>
+
+  <!-- Stroke 166,851 -> 121.7 -->
+  <text x="350" y="888" fill="#003049" font-size="26" font-weight="bold" text-anchor="end">Stroke</text>
+  <rect x="370" y="865" width="121.7" height="36" fill="#94D2BD"/>
+  <text x="511.7" y="888" fill="#003049" font-size="22" font-weight="bold">166,851</text>
+
+  <!-- combined callout -->
+  <text x="80" y="968" fill="#9B2226" font-size="30" font-weight="bold">&#8776; 86% of heart disease + cancer combined</text>
+  <text x="80" y="1002" fill="#6B7280" font-size="23">1,124,000 vs 1,303,347 (683,476 + 619,871) &#8212; the two leading recorded causes together.</text>
+
+  <!-- divider -->
+  <line x1="80" y1="1060" x2="1120" y2="1060" stroke="#E9D8A6" stroke-width="3"/>
+
+  <!-- ============================================================= -->
+  <!-- SECTION 2 — THE RACIAL GAP                                    -->
+  <!-- ============================================================= -->
+  <text x="80" y="1150" fill="#003049" font-size="34" font-weight="bold">The gap by race</text>
+  <text x="80" y="1184" fill="#6B7280" font-size="24">Abortion rate per 100,000 people &#8212; a wide gap across groups.</text>
+
+  <!-- ratio punch -->
+  <text x="1120" y="1150" fill="#9B2226" font-size="88" font-weight="bold" text-anchor="end">4.37&#215;</text>
+  <text x="1120" y="1188" fill="#6B7280" font-size="23" text-anchor="end">Black rate vs White rate</text>
+
+  <!-- proportional bars (track x420 -> x1120 is 700px at max value 753.2) -->
+  <!-- Black 753.2 -> 700.0 ; would rank #1 (rank note sits inside the long bar, right-aligned) -->
+  <text x="400" y="1278" fill="#003049" font-size="26" font-weight="bold" text-anchor="end">Black Americans</text>
+  <rect x="420" y="1255" width="700.0" height="42" fill="#9B2226"/>
+  <text x="440" y="1283" fill="#FFFFFF" font-size="24" font-weight="bold">753.2 per 100k</text>
+  <text x="1104" y="1283" fill="#FFFFFF" font-size="20" text-anchor="end">would rank #1</text>
+
+  <!-- Hispanic 492.8 -> 458.0 ; would rank #1 -->
+  <text x="400" y="1348" fill="#003049" font-size="26" font-weight="bold" text-anchor="end">Hispanic</text>
+  <rect x="420" y="1325" width="458.0" height="42" fill="#0A9396"/>
+  <text x="440" y="1353" fill="#FFFFFF" font-size="24" font-weight="bold">492.8 per 100k</text>
+  <text x="898" y="1353" fill="#6B7280" font-size="20">would rank #1</text>
+
+  <!-- White 172.2 -> 160.1 ; would rank #3 -->
+  <text x="400" y="1418" fill="#003049" font-size="26" font-weight="bold" text-anchor="end">White Americans</text>
+  <rect x="420" y="1395" width="160.1" height="42" fill="#94D2BD"/>
+  <text x="600" y="1423" fill="#003049" font-size="24" font-weight="bold">172.2 per 100k</text>
+  <text x="820" y="1423" fill="#6B7280" font-size="20">would rank #3</text>
+
+  <!-- supporting ratio lines -->
+  <text x="80" y="1500" fill="#6B7280" font-size="23">Black / White &#160;<tspan fill="#003049" font-weight="bold">4.37&#215;</tspan>&#160;&#160;&#8226;&#160;&#160;Hispanic / White &#160;<tspan fill="#003049" font-weight="bold">2.86&#215;</tspan>&#160;&#160;&#8226;&#160;&#160;Black / Hispanic &#160;<tspan fill="#003049" font-weight="bold">1.53&#215;</tspan></text>
+  <text x="80" y="1534" fill="#6B7280" font-size="20">Categories: Non-Hispanic White, Non-Hispanic Black, Hispanic.</text>
+
+  <!-- divider -->
+  <line x1="80" y1="1600" x2="1120" y2="1600" stroke="#E9D8A6" stroke-width="3"/>
+
+  <!-- ============================================================= -->
+  <!-- SECTION 3 — GESTATION CONTEXT                                 -->
+  <!-- ============================================================= -->
+  <text x="80" y="1690" fill="#003049" font-size="34" font-weight="bold">When they occur</text>
+  <text x="80" y="1724" fill="#6B7280" font-size="24">Share of abortions by gestational age.</text>
+
+  <!-- big 93% -->
+  <text x="80" y="1860" fill="#005F73" font-size="150" font-weight="bold">93%</text>
+  <text x="80" y="1908" fill="#6B7280" font-size="26">occur by 13 weeks of gestation.</text>
+
+  <!-- proportional split bar: 93% / 7% (track x600 -> x1120 is 520px) -->
+  <rect x="600" y="1770" width="483.6" height="70" fill="#005F73"/>
+  <rect x="1083.6" y="1770" width="36.4" height="70" fill="#CBB477"/>
+  <text x="608" y="1813" fill="#FFFFFF" font-size="30" font-weight="bold">&#8804; 13 weeks &#160; 93%</text>
+  <text x="1101.8" y="1868" fill="#6B7280" font-size="20" text-anchor="middle">7%</text>
+  <text x="1101.8" y="1894" fill="#6B7280" font-size="18" text-anchor="middle">later</text>
+
+  <!-- ============================================================= -->
+  <!-- FOOTER BAND  (pinned to bottom of canvas height 2140)         -->
+  <!-- ============================================================= -->
+  <rect x="0" y="2050" width="1200" height="90" fill="#003049"/>
+  <text x="80" y="2095" fill="#FFFFFF" font-size="24" font-weight="bold">@unwelcomedata</text>
+  <text x="80" y="2125" fill="#94D2BD" font-size="18">CDC WONDER 2024 + Guttmacher Institute 2024 &#183; crude rates (not age-adjusted); abortions added to the population denominator.</text>
+</svg>

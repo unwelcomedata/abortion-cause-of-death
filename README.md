@@ -14,6 +14,11 @@ most people never see on the same axis as the causes of death they do. What you
 conclude from that is yours. The construction, the denominator choice, and every
 source are documented openly below and in [SOURCES.md](SOURCES.md).
 
+[![If abortion were a cause of death — infographic](docs/infographic_abortion.png)](docs/infographic_abortion.png)
+
+_The whole picture in one page. The individual charts, the methodology, and every
+source follow below._
+
 ---
 
 ## The charts
